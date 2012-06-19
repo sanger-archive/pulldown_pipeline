@@ -1,7 +1,4 @@
 class Pulldown::PooledPlate < Sequencescape::Plate
-  include Pulldown::PooledWells
-  include Pulldown::CommonPlateBehaviour
-
   # We need to specialise the transfers where this plate is a source so that it handles
   # the correct types
   class Transfer < ::Sequencescape::Transfer
@@ -39,7 +36,6 @@ class Pulldown::PooledPlate < Sequencescape::Plate
   end
 
   def source_of(tube)
-    self.source_transfers.first.transfers.key(tube)
+    source_transfers.first.transfers.select { |_, t| t.uuid == tube.uuid }.map(&:first)
   end
-
 end
