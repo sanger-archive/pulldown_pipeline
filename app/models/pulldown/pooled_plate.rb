@@ -17,12 +17,16 @@ class Pulldown::PooledPlate < Sequencescape::Plate
     alias_method_chain(:transfers=, :tube_mapping)
   end
 
-  has_many :source_transfers, :class_name => 'PooledPlate::Transfer'
+  has_many :transfers_to_tubes, :class_name => 'PooledPlate::Transfer'
+
+  def well_to_tube_transfers
+    transfers_to_tubes.first.transfers
+  end
 
   # We know that if there are any transfers with this plate as a source then they are into
   # tubes.
   def has_transfers_to_tubes?
-    not source_transfers.empty?
+    not well_to_tube_transfers.empty?
   end
 
   # Well locations ordered by columns.
@@ -31,11 +35,17 @@ class Pulldown::PooledPlate < Sequencescape::Plate
   # Returns the tubes that an instance of this plate has been transferred into.
   def tubes
     return [] unless has_transfers_to_tubes?
-    transfers = source_transfers.first.transfers
-    WELLS_IN_COLUMN_MAJOR_ORDER.map(&transfers.method(:[])).compact
+    WELLS_IN_COLUMN_MAJOR_ORDER.map(&well_to_tube_transfers.method(:[])).compact
   end
 
-  def source_of(tube)
-    source_transfers.first.transfers.select { |_, t| t.uuid == tube.uuid }.map(&:first)
+  def tubes_and_sources
+    return [] unless has_transfers_to_tubes?
+    WELLS_IN_COLUMN_MAJOR_ORDER.map do |l|
+      [l, well_to_tube_transfers[l]]
+    end.group_by do |_, t|
+      t.uuid
+    end.map do |_, well_tube_pairs|
+      [well_tube_pairs.first.last, well_tube_pairs.map(&:first)]
+    end
   end
 end
