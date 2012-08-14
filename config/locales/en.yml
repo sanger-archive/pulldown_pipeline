@@ -243,10 +243,10 @@ en:
 
 
     passed:
-      state_text: "‘WGS LIBRARY PCR’ → ‘WGS LIBRARY PCR-XP’ plate is complete"
-      instruction_summary: "‘WGS LIBRARY PCR’ → ‘WGS LIBRARY PCR-XP’ plate is complete"
+      state_text: "‘WGS LIB PCR-XP’ → ‘WGS LIB POOL’ plate is complete"
+      instruction_summary: "‘WGS LIB PCR-XP’ → ‘WGS LIBRARY PCR-XP’ plate is complete"
       instructions:
-        <li>Prepare to transfer the ‘WGS POOED LIBRARY’ to tubes.</li>
+        <li>Prepare to transfer the ‘WGS POOLED LIBRARY’ to tubes.</li>
         <li>Print labels and apply to tubes.</li>
 
   SC stock DNA:
