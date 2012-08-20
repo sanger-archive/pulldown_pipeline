@@ -13,7 +13,7 @@ GIT
 
 GIT
   remote: git+ssh://git@github.com/sanger/sequencescape-client-api.git
-  revision: 3c7b40f1dc1556368ec0e6c1c20419e98e6bc4c7
+  revision: 5a5415acbc24f8c053041b5b20a641d8c460d78e
   branch: master
   specs:
     sequencescape-client-api (0.0.1)
