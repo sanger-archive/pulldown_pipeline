@@ -83,4 +83,8 @@ module LabWareHelper
     end
   end
 
+  def well_state_value(container)
+    container.state == 'failed' ? 'permanent-failure' : container.state
+  end
+
 end

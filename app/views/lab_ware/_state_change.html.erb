@@ -12,6 +12,9 @@
             :as => :plate
           )) do |f|
     %>
+    <%= hidden_field_tag :purpose_uuid, presenter.purpose.uuid %>
+    <%= hidden_field_tag :labware_ean13_barcode, presenter.lab_ware.barcode.ean13 %>
+
    <ul id="state-changer" data-role="listview" data-inset="true">
       <%= f.inputs do %>
         <% if admin_page? -%>
