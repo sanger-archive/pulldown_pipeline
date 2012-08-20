@@ -21,6 +21,12 @@ module Pulldown::TagLayoutTemplate::WalkWellsInPools
 
       next if current_group.map(&:last).compact.uniq == [ true ] # Are all of the wells "empty"?
 
+      # Remove empty wells from the end of the column, stoping at the first full well.
+      current_group = current_group.reverse.drop_while {|well_location,_,emptyness|
+        emptyness && well_location.present?
+      }.reverse!
+
+
       current_group.each_with_index do |(well, pool_id, _), index|
         throw :unacceptable_tag_layout if tags.size <= index
         tagged_wells[well] = [ pools.index(pool_id)+1, tags[index] ] unless well.nil?
