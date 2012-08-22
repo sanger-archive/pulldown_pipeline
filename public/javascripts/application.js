@@ -45,35 +45,104 @@
 
   // ########################################################################
   // # Page events....
-  $('#search-page').live('pageinit', function(event){
-    // Users should start the page by scanning in...
-    $('#card_id').focus();
 
-    $('#card_id').live('blur', function(){
-      if ($(this).val()) {
+  $(document).on('pageinit', function(){
+    // Trap the carriage return sent by the swipecard reader
+    $(document).on("keydown", "input.card-id", function(e) {
+      var code=e.charCode || e.keyCode;
+      if (code==13) {
+        $("#plate_barcode").focus();
+        return false;
+      }
+
+    });
+
+    var myPlateButtonObserver = function(event){
+      if ($(event.currentTarget).val()) {
+          $('.show-my-plates-button').button('disable');
+      } else if ($('input.card-id').val()) {
+          $('.show-my-plates-button').button('enable');
+      }
+    };
+
+    $(document).on("keyup", ".plate-barcode", myPlateButtonObserver);
+    $(document).on("keyup", ".card-id", myPlateButtonObserver);
+
+    // Trap the carriage return sent by barcode scanner
+    $(document).on("keydown", ".plate-barcode", function(event) {
+      var code=event.charCode || event.keyCode;
+      // Check for carrage return (key code 13)
+      if (code==13) {
+        // Check that the value is 13 characters long like a barcode
+        if ($(event.currentTarget).val().length === 13) {
+          $(event.currentTarget).closest('form').find('.show-my-plates').val(false);
+          $(event.currentTarget).closest('.plate-search-form').submit();
+        }
+      }
+    });
+
+    // Change the colour of the title bar to show a user id
+    $(document).on('blur', 'input.card-id', function(event){
+      if ($(event.currentTarget).val()) {
         $('.ui-header').removeClass('ui-bar-a').addClass('ui-bar-b');
       } else {
         $('.ui-header').removeClass('ui-bar-b').addClass('ui-bar-a');
       }
     });
 
-    // Trap the carriage return sent by the swipecard reader
-    $("#card_id").live("keydown", function(e) {
-      var code=e.charCode || e.keyCode;
-      if (code==13) {
-        $("#plate_barcode").focus();
-        return false;
-      }
-    });
 
     // Fill in the plate barcode with the plate links barcode
-    $(".plate_link").click(function() {
-      $('#plate_barcode').val($(this).attr('id').substr(6));
-      $('#plate-search-form').submit();
+    $(document).on('click', ".plate-link", function(event) {
+      $('.plate-barcode').val($(event.currentTarget).attr('id').substr(6));
+      $('.show-my-plates').val(false);
+      $('.plate-search-form').submit();
       return false;
     });
 
+
+    // Disable submit buttons after first click...
+    $(document).on('submit', 'form', function(event){
+      $(event.currentTarget).find(':submit').
+        button('disable').
+        prev('.ui-btn-inner').
+        find('.ui-btn-text').
+        text('Working...');
+
+      return true;
+    });
+
   });
+
+
+  // $('#search-page').live('pageinit', function(event){
+  //   // Users should start the page by scanning in...
+  //   $('#card_id').focus();
+
+  //   $('#card_id').live('blur', function(){
+  //     if ($(this).val()) {
+  //       $('.ui-header').removeClass('ui-bar-a').addClass('ui-bar-b');
+  //     } else {
+  //       $('.ui-header').removeClass('ui-bar-b').addClass('ui-bar-a');
+  //     }
+  //   });
+
+  //   // Trap the carriage return sent by the swipecard reader
+  //   $("#card_id").live("keydown", function(e) {
+  //     var code=e.charCode || e.keyCode;
+  //     if (code==13) {
+  //       $("#plate_barcode").focus();
+  //       return false;
+  //     }
+  //   });
+
+  //   // Fill in the plate barcode with the plate links barcode
+  //   $(".plate_link").click(function() {
+  //     $('#plate_barcode').val($(this).attr('id').substr(6));
+  //     $('#plate-search-form').submit();
+  //     return false;
+  //   });
+
+  // });
 
 
   $('#plate-show-page').live('pagecreate', function(event) {
@@ -148,11 +217,11 @@
 
   $('#creation-page').live('pageinit',function(event) {
     var transfers = {
-      'Transfer columns 1-1':  '.col-1',
-      'Transfer columns 1-2':  '.col-1,.col-2',
-      'Transfer columns 1-3':  '.col-1,.col-2,.col-3',
-      'Transfer columns 1-4':  '.col-1,.col-2,.col-3,.col-4',
-      'Transfer columns 1-6':  '.col-1,.col-2,.col-3,.col-4,.col-5,.col-6',
+       'Transfer columns 1-1': '.col-1',
+       'Transfer columns 1-2': '.col-1,.col-2',
+       'Transfer columns 1-3': '.col-1,.col-2,.col-3',
+       'Transfer columns 1-4': '.col-1,.col-2,.col-3,.col-4',
+       'Transfer columns 1-6': '.col-1,.col-2,.col-3,.col-4,.col-5,.col-6',
       'Transfer columns 1-12': '.col-all'
     };
 
