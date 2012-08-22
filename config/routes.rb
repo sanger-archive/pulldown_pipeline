@@ -1,8 +1,9 @@
 PulldownPipeline::Application.routes.draw do
   scope 'search', :controller => :search do
-    match '/',                       :action => 'new',    :via => :get,  :as => :search
-    match '/',                       :action => 'create', :via => :post, :as => :perform_search
-    match '/all_outstanding_plates', :action => :all_outstanding_plates
+    match '/',                 :action => 'new',            :via => :get,  :as => :search
+    match '/',                 :action => 'create_or_find', :via => :post, :as => :perform_search
+    match '/ongoing_plates',   :action => :ongoing_plates
+    match '/all_stock_plates', :action => :stock_plates
   end
 
   resources :pulldown_plates, :controller => :plates do

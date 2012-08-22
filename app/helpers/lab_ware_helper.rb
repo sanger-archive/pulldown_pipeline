@@ -44,10 +44,10 @@ module LabWareHelper
     @admin_link ||= link_to(
       'Admin',
       edit_admin_plate_path(presenter.plate.uuid),
-      :id           => presenter.plate.uuid,
+      :id                => presenter.plate.uuid,
       :'data-transition' => 'pop',
-      :'data-icon'  => 'gear',
-      :rel          => "external"
+      :'data-icon'       => 'gear',
+      :rel               => "external"
     )
   end
 
@@ -84,7 +84,14 @@ module LabWareHelper
   end
 
   def well_state_value(container)
-    container.state == 'failed' ? 'permanent-failure' : container.state
+    return @fallback_state if @fallback_state.present?
+
+    case container.state
+    when 'failed'  then 'permanent-failure'
+    when 'unknown' then
+      @fallback_state = container.plate.state
+    else container.state
+    end
   end
 
 end
