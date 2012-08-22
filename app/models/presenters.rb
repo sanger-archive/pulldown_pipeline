@@ -48,7 +48,7 @@ module Presenters
     class_inheritable_reader    :authenticated_tab_states
     write_inheritable_attribute :authenticated_tab_states, {
         :pending    =>  [ 'summary-button', 'plate-state-button' ],
-        :started    =>  [ 'summary-button', 'plate-state-button' ],
+        :started    =>  [ 'plate-state-button', 'summary-button' ],
         :passed     =>  [ 'plate-creation-button','summary-button', 'well-failing-button', 'plate-state-button' ],
         :cancelled  =>  [ 'summary-button' ],
         :failed     =>  [ 'summary-button' ]
@@ -59,7 +59,11 @@ module Presenters
     end
 
     def lab_ware
-      self.plate
+      @labware ||= self.plate
+    end
+
+    def purpose
+      @purpose ||= lab_ware.plate_purpose
     end
 
     def control_worksheet_printing(&block)
@@ -94,7 +98,7 @@ module Presenters
     end
 
     def self.lookup_for(plate)
-      plate_details = Settings.plate_purposes[plate.plate_purpose.uuid] or raise UnknownPlateType, plate
+      plate_details = Settings.purposes[plate.plate_purpose.uuid] or raise UnknownPlateType, plate
       plate_details[:presenter_class].constantize
     end
   end
