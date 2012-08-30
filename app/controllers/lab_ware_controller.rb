@@ -1,11 +1,11 @@
 class LabWareController < ApplicationController
-  before_filter :locate_lab_ware, :on => [ :show, :update ]
+  before_filter :locate_lab_ware, :only => [ :show, :update ]
   def locate_lab_ware
     @lab_ware = locate_lab_ware_identified_by(params[:id])
   end
   private :locate_lab_ware
 
-  before_filter :get_printers, :on => [ :show, :update ]
+  before_filter :get_printers, :only => [ :show, :update ]
   def get_printers
     @printers = api.barcode_printer.all
   end

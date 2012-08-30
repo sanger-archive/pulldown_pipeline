@@ -33,12 +33,14 @@ class SearchController < ApplicationController
     params['show-my-plates'] == 'true' ? my_plates : create
   end
 
-  # TODO get rid of this exception spagetti and introduce a search presenter with validation!
+  # TODO get rid of this exception spaghetti and introduce a search presenter with validation!
   def create
-    raise "You have not supplied a labware barcode" if params[:plate_barcode].blank?
+
+    labware_uuid = params[:labware_uuid] || find_plate(params[:plate_barcode]).uuid
+    raise "You have not supplied a labware barcode" if labware_uuid.nil?
 
     respond_to do |format|
-      format.html { redirect_to find_plate(params[:plate_barcode]) }
+      format.html { redirect_to pulldown_plate_path(labware_uuid) }
     end
 
   rescue => exception
