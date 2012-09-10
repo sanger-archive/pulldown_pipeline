@@ -60,7 +60,7 @@ module Forms
           :source      => parent_uuid,
           :destination => parent_uuid,
           :user        => user_uuid
-        ).transfers
+        ).transfers.reject { |from_well,to_well| to_well.blank? }
       )
     end
 
@@ -99,7 +99,7 @@ module Forms
         :source      => parent_uuid,
         :destination => @plate_creation.child.uuid,
         :user        => user_uuid,
-        :transfers   => transfers
+        :transfers   => transfers.reject { |from_well,to_well| to_well.blank? }
       )
 
       yield(@plate_creation.child) if block_given?
