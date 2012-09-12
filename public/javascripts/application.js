@@ -113,9 +113,7 @@
 
   });
 
-
-
-  $('#plate-show-page').live('pagecreate', function(event) {
+  $(document).on('pagecreate','#plate-show-page', function(event) {
 
     var tabsForState = '#'+SCAPE.plate.tabStates[SCAPE.plate.state].join(', #');
 
@@ -133,10 +131,10 @@
         fadeOut( function(){ $(targetIds).fadeIn(); } );
     };
 
-    $('.navbar-link').live('click', SCAPE.linkHandler);
+    $(document).on('click','.navbar-link', SCAPE.linkHandler);
   });
 
-  $('#plate-show-page').live('pageinit', function(event){
+  $(document).on('pageinit','#plate-show-page', function(event){
     var targetTab = SCAPE.plate.tabStates[SCAPE.plate.state][0];
     var targetIds = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
 
@@ -162,11 +160,11 @@
 
     // State changes reasons...
     SCAPE.displayReason();
-    $('#state').live('change', SCAPE.displayReason);
+    $(document).on('change','#state', SCAPE.displayReason);
   });
 
 
-  $('#admin-page').live('pageinit',function(event) {
+  $(document).on('pageinit','#admin-page',function(event) {
 
     $('#plate_edit').submit(function() {
       if ($('#card_id').val().length === 0) {
@@ -176,16 +174,16 @@
     });
 
     // Trap the carriage return sent by the swipecard reader
-    $("#card_id").live("keydown", function(e) {
+    $(document).on("keydown","#card_id", function(e) {
       var code=e.charCode || e.keyCode;
       if (code==13) return false;
     });
 
     SCAPE.displayReason();
-    $('#state').live('click',SCAPE.displayReason);
+    $(document).on('click','#state',SCAPE.displayReason);
   });
 
-  $('#creation-page').live('pageinit',function(event) {
+  $(document).on('pageinit','#creation-page',function(event) {
     var transfers = {
        'Transfer columns 1-1': '.col-1',
        'Transfer columns 1-2': '.col-1,.col-2',
@@ -206,7 +204,7 @@
   });
 
 
-  $('#tag-creation-page').live('pageinit', function(){
+  $(document).on('pageinit','#tag-creation-page', function(){
 
     $.extend(window.SCAPE, {
 
@@ -308,7 +306,7 @@
 
   });
 
-  $('#custom-pooling-page').live('pageinit',function(event) {
+  $(document).on('pageinit','#custom-pooling-page',function(event) {
     var sourceWell        = undefined;
     var destinationWell   = undefined;
 
