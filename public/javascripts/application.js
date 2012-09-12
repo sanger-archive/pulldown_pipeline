@@ -114,36 +114,6 @@
   });
 
 
-  // $('#search-page').live('pageinit', function(event){
-  //   // Users should start the page by scanning in...
-  //   $('#card_id').focus();
-
-  //   $('#card_id').live('blur', function(){
-  //     if ($(this).val()) {
-  //       $('.ui-header').removeClass('ui-bar-a').addClass('ui-bar-b');
-  //     } else {
-  //       $('.ui-header').removeClass('ui-bar-b').addClass('ui-bar-a');
-  //     }
-  //   });
-
-  //   // Trap the carriage return sent by the swipecard reader
-  //   $("#card_id").live("keydown", function(e) {
-  //     var code=e.charCode || e.keyCode;
-  //     if (code==13) {
-  //       $("#plate_barcode").focus();
-  //       return false;
-  //     }
-  //   });
-
-  //   // Fill in the plate barcode with the plate links barcode
-  //   $(".plate_link").click(function() {
-  //     $('#plate_barcode').val($(this).attr('id').substr(6));
-  //     $('#plate-search-form').submit();
-  //     return false;
-  //   });
-
-  // });
-
 
   $('#plate-show-page').live('pagecreate', function(event) {
 
@@ -364,7 +334,6 @@
 
       $('#destination_plate .well[data-aliquot-count=0]').children().remove();
 
-      // setupHighLightTransfers();
     };
 
     function resetAliquotCounts(){
@@ -374,7 +343,6 @@
 
       poolingDestinations = _.uniq(poolingDestinations);
 
-      // Reset data-aliquot-count to 0 for all the destination wells
       $('#destination_plate .well').attr('data-aliquot-count', 0);
 
       _.each(poolingDestinations, function(wellLocation){
@@ -411,14 +379,6 @@
     function aliquotsByDestination(el){
       return $('.source_aliquot').not(':contains('+ getLocation(el) +')');
     }
-
-    // function setupHighLightTransfers(){
-    //   $('#destination_plate .aliquot').toggle(
-    //     function(){
-    //     $('#destination_plate .aliquot').not(this).each(SCAPE.dim);
-    //     aliquotsByDestination(this).each(SCAPE.dim);
-    //   }, undimAliquots);
-    // }
 
     function poolingHandler(){
       setPoolingValue(sourceWell, $(this));
@@ -481,7 +441,6 @@
     );
 
     resetAliquotCounts();
-    // setupHighLightTransfers();
   });
 })(window, jQuery);
 
