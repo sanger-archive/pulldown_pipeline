@@ -6,34 +6,52 @@
     window.SCAPE = {};
   }
 
-  //temporarily used until page ready event sorted... :(
-  //This is a copy of the template held in the tagging page.
-  SCAPE.tag_palette_template =
-    '<li class="ui-li ui-li-static ui-body-c">'+
-    '<div class="available-tag palette-tag"><%= tag_id %></div>&nbsp;&nbsp;Tag <%= tag_id %>'+
-    '</li>';
+  // Extend SCAPE as it could have already been defined in the view.
+  $.extend(SCAPE, {
+    //temporarily used until page ready event sorted... :(
+    //This is a copy of the template held in the tagging page.
+    tag_palette_template :
+      '<li class="ui-li ui-li-static ui-body-c">'+
+      '<div class="available-tag palette-tag"><%= tag_id %></div>&nbsp;&nbsp;Tag <%= tag_id %>'+
+      '</li>',
 
-  //temporarily used until page ready event sorted... :(
-  //This is a copy of the template held in the tagging page.
-  SCAPE.substitution_tag_template =
-    '<li class="ui-li ui-li-static ui-body-c" data-split-icon="delete">'+
-    '<div class="substitute-tag palette-tag"><%= original_tag_id %></div>&nbsp;&nbsp;Tag <%= original_tag_id %> replaced with Tag <%= replacement_tag_id %>&nbsp;&nbsp;<div class="available-tag palette-tag"><%= replacement_tag_id %></div>'+
-    '<input id="plate-substitutions-<%= original_tag_id %>" name="plate[substitutions][<%= original_tag_id %>]" type="hidden" value="<%= replacement_tag_id %>" />'+
-    '</li>';
+    //temporarily used until page ready event sorted... :(
+    //This is a copy of the template held in the tagging page.
+    substitution_tag_template:
+      '<li class="ui-li ui-li-static ui-body-c" data-split-icon="delete">'+
+      '<div class="substitute-tag palette-tag"><%= original_tag_id %></div>&nbsp;&nbsp;Tag <%= original_tag_id %> replaced with Tag <%= replacement_tag_id %>&nbsp;&nbsp;<div class="available-tag palette-tag"><%= replacement_tag_id %></div>'+
+      '<input id="plate-substitutions-<%= original_tag_id %>" name="plate[substitutions][<%= original_tag_id %>]" type="hidden" value="<%= replacement_tag_id %>" />'+
+      '</li>',
 
-  SCAPE.displayReason = function() {
-    if($('.reason:visible').length === 0) {
-      $('#'+$('#state option:selected').val()).slideDown('slow').find('select:disabled').removeAttr('disabled');
-    } 
-    else {
-      $('.reason').not('#'+$('#state option:selected').val()).slideUp('slow', function(){
+    displayReason: function() {
+      if ($('.reason:visible').length === 0) {
         $('#'+$('#state option:selected').val()).slideDown('slow').find('select:disabled').removeAttr('disabled');
-      });
+      }
+      else {
+        $('.reason').not('#'+$('#state option:selected').val()).slideUp('slow', function(){
+          $('#'+$('#state option:selected').val()).slideDown('slow').find('select:disabled').removeAttr('disabled');
+        });
+      }
+
+    },
+
+    dim: function() { $(this).fadeTo('fast', 0.2); },
+
+
+    linkHandler: function(event){
+      var targetTab     = $(event.currentTarget).attr('rel');
+      var targetIds     = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
+      var fadeInTargets = function(){ $(targetIds).fadeIn(); };
+
+      var nonTargets = $('.scape-ui-block').not(targetIds);
+
+      if (nonTargets.length) {
+        nonTargets.fadeOut(fadeInTargets);
+      } else {
+        fadeInTargets();
+      }
     }
-
-  };
-
-  SCAPE.dim = function() { $(this).fadeTo('fast', 0.2); };
+  });
 
   // Extend jQuery...
   $.extend({
@@ -50,6 +68,7 @@
     // Trap the carriage return sent by the swipecard reader
     $(document).on("keydown", "input.card-id", function(e) {
       var code=e.charCode || e.keyCode;
+
       if (code==13) {
         $("#plate_barcode").focus();
         return false;
@@ -111,6 +130,8 @@
       return true;
     });
 
+    // Setup the changing
+    $(document).on('click','.navbar-link', SCAPE.linkHandler);
   });
 
   $(document).on('pagecreate','#plate-show-page', function(event) {
@@ -120,18 +141,6 @@
     $('#navbar li').not(tabsForState).remove();
     $('#'+SCAPE.plate.tabStates[SCAPE.plate.state][0]).find('a').addClass('ui-btn-active');
 
-
-    SCAPE.linkHandler = function(){
-      var targetTab = $(this).attr('rel');
-      var targetIds = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
-
-      $('.scape-ui-block').
-        not(targetIds).
-        filter(':visible').
-        fadeOut( function(){ $(targetIds).fadeIn(); } );
-    };
-
-    $(document).on('click','.navbar-link', SCAPE.linkHandler);
   });
 
   $(document).on('pageinit','#plate-show-page', function(event){
@@ -208,8 +217,8 @@
 
     $.extend(window.SCAPE, {
 
-      tagpaletteTemplate     : _.template(SCAPE.tag_palette_template),
-      substitutionTemplate  : _.template(SCAPE.substitution_tag_template),
+        tagpaletteTemplate: _.template(SCAPE.tag_palette_template),
+      substitutionTemplate: _.template(SCAPE.substitution_tag_template),
 
       updateTagpalette  : function() {
         var tagpalette = $('#tag-palette');
@@ -227,7 +236,7 @@
 
       },
 
-      tagSubstitutionHandler : function() {
+      tagSubstitutionHandler: function() {
         var sourceAliquot = $(this);
         var originalTag   = sourceAliquot.text();
 
@@ -267,8 +276,8 @@
       },
 
 
-      update_layout : function () {
-        var tags = $(window.tag_layouts[$('#plate_tag_layout_template_uuid option:selected').text()]);
+      update_layout: function () {
+        var tags = $(window.tag_layouts[$('#plate_tag_layout_template_uuid option: selected').text()]);
 
         tags.each(function(index) {
           $('#tagging-plate #aliquot_'+this[0]).
@@ -282,12 +291,12 @@
         SCAPE.resetSubstitutions();
       },
 
-      resetSubstitutions : function() {
+      resetSubstitutions: function() {
         $('#substitutions ul').empty();
         $('#tagging-plate .aliquot').removeClass('selected-aliquot');
       },
 
-      resetHandler : function() {
+      resetHandler: function() {
         $('.aliquot').css('opacity', 1);
         $('.available-tags').unbind();
         $('#replacement-tags').fadeOut(function(){
@@ -318,7 +327,7 @@
 
       sourceWell.find('.aliquot').
         text(destination).
-        addClass('aliquot source_aliquot ' + coloursByLocation[destination]).
+        addClass('aliquot source_aliquot ' + SCAPE.coloursByLocation[destination]).
         attr('data-destination-well', destination);
 
       sourceWell.find('input').val(destination);
@@ -355,7 +364,7 @@
       aliquot.
         attr('id', 'aliquot_' + location).
         addClass('aliquot').
-        addClass(coloursByLocation[location]).
+        addClass(SCAPE.coloursByLocation[location]).
         text(location);
 
       return aliquot;

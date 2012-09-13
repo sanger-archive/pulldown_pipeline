@@ -10,6 +10,23 @@ module Forms
 
     write_inheritable_attribute :attributes, [:api, :plate_purpose_uuid, :parent_uuid, :user_uuid, :transfers]
 
+    write_inheritable_attribute :tab_views, {
+      'master-settings' => [
+        'master-plex-level-block', 'input-plate-block',
+             'create-plate-block', 'output-plate-block'
+      ],
+
+      'edit-pool'       => [
+        'edit-pool-instruction-block', 'input-plate-block',
+                    'edit-pool-block', 'output-plate-block'
+      ],
+
+      'move-pools'      => [
+        'move-pools-instruction-block', 'input-plate-block',
+                    'move-pools-block', 'output-plate-block'
+      ]
+    }
+
     class TransferHelper
       def initialize(transfers)
         @transfers = transfers
