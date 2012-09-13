@@ -1,10 +1,17 @@
 <%= page(:'custom-pooling-page') do %>
-  <%= header(@creation_form, 'Custom pooling') %>
+  <div data-role="header">
+    <h1>Custom pooling</h1>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#" class="navbar-link ui-btn-active" rel="master-settings">Master Plex Level</a></li>
+        <li><a href="#" class="navbar-link" rel="edit-pool" >Edit Pre-cap pools</a></li>
+        <li><a href="#" class="navbar-link" rel="move-pools" >Move Pools</a></li>
+      </ul>
+    </div>
+  </div>
+
 
   <%= content do %>
-    <div class="ui-grid-a">
-      <div class="ui-block-a">
-        <h2>Source Plate</h2>
         <%= semantic_form_for(
           @creation_form,
           :url => pulldown_plate_children_path(@creation_form.parent),
@@ -12,40 +19,96 @@
           :html => {:method => :post}) do |form|
         %>
 
-            <%= form.inputs do %>
-              <%= form.input :plate_purpose_uuid, :as => :hidden, :value =>@creation_form.plate_purpose_uuid %>
-              <%= form.input :parent_uuid, :as => :hidden, :value => @creation_form.parent_uuid %>
-            <% end %>
+        <%= form.inputs do %>
+          <%= form.input :plate_purpose_uuid, :as => :hidden, :value =>@creation_form.plate_purpose_uuid %>
+          <%= form.input :parent_uuid, :as => :hidden, :value => @creation_form.parent_uuid %>
+        <% end %>
 
-            <%= render :partial => "pooled_plate", :locals => {:plate_presenter => @creation_form, :form => form} %>
+    <div class="ui-grid-a">
+      <div id="source-block" class="ui-block-a">
 
-            <h2>Destination Plate</h2>
-            <%= render :partial => "plates/plate", :locals => {:plate_presenter => @creation_form, :id => "destination_plate"} %>
-            <br/>
-            <%= form.submit 'Create Plate',
-              :class => 'create-button',
-              :'data-theme' => 'b',
-              :'data-icon'  => 'plus'
-            %>
-          <% end %>
+        <div id="master-plex-level-block" class="scape-ui-block">
+          <h2>Source Plate</h2>
+          <label for="master-plex-level">Master Plex level:</label>
+          <input type="range" name="master-plex-level" id="master-plex-level" value="4" min="1" max="96" />
+
+          <div class="instructions ui-blody">
+            <h3>Custom Pooling</h3>
+            <p>You can choose a custom pooling layout by: </p>
+            <ol>
+              <li>Selecting aliquots from the source place.</li>
+              <li>Choosing a well on the destination plate.</li>
+            </ol>
+            <p>NB. Final pipeline pooling will be as per the original submission.</p>
+          </div>
+        </div>
+
+        <div id="edit-pool-instruction-block" class="scape-ui-block" style="display:none;">
+          edit instruction
+        </div>
+        <div id="move-pools-instruction-block" class="scape-ui-block" style="display:none;">
+          move-pools instructions
+        </div>
+
       </div>
 
       <div class="ui-block-b">
-        <div class="instructions ui-blody">
-          <h3>Custom Pooling</h3>
-          <p>You can choose a custom pooling layout by: </p>
-          <ol>
-            <li>Selecting aliquots from the source place.</li>
-            <li>Choosing a well on the destination plate.</li>
-          </ol>
-          <p>NB. Final pipeline pooling will be as per the original submission.</p>
+        <div id="input-plate-block" class="scape-ui-block">
+          <%= render :partial => "pooled_plate", :locals => {:plate_presenter => @creation_form, :form => form} %>
         </div>
       </div>
+
     </div>
+
+    <div class="ui-grid-a">
+      <div class="ui-block-a">
+
+        <div id="create-plate-block" class="scape-ui-block">
+          <h2>Destination Plate</h2>
+          <br/>
+          <%= form.submit 'Create Plate',
+            :class => 'create-button',
+            :'data-theme' => 'b',
+            :'data-icon'  => 'plus'
+          %>
+        </div>
+
+        <div id="edit-pool-block" class="scape-ui-block" style="display:none;">
+          EDIT POOL
+        </div>
+
+        <div id="move-pools-block" class="scape-ui-block" style="display:none;">
+          MOVE POOLs
+        </div>
+      </div>
+
+      <div class="ui-block-b">
+        <div id="output-plate-block" class="scape-ui-block">
+          <%= render :partial => "plates/plate", :locals => {:plate_presenter => @creation_form, :id => "destination_plate"} %>
+      </div>
+      </div>
+    </div>
+    <% end %>
   <% end %>
 
 
-  <script type="text/javascript">
-    var coloursByLocation = <%= colours_by_location.to_json.html_safe %>;
-  </script>
+<script type="text/javascript">
+  (function(window, $, undefined){
+    "use strict";
+
+    // Set up the SCAPE namespace
+    if (window.SCAPE === undefined) {
+      window.SCAPE = {};
+    }
+
+    // Extend SCAPE as it could have already been defined in the view.
+    $.extend(SCAPE, {
+      coloursByLocation: <%= colours_by_location.to_json.html_safe %>,
+      plate: {
+         tabViews: <%= @creation_form.tab_views.to_json.html_safe %>
+      }
+    });
+
+  })(window, $);
+</script>
 <% end %>
