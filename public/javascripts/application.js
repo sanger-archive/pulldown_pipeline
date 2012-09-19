@@ -39,17 +39,12 @@
 
 
     linkHandler: function(event){
-      var targetTab     = $(event.currentTarget).attr('rel');
-      var targetIds     = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
-      var fadeInTargets = function(){ $(targetIds).fadeIn(); };
-
+      var targetTab  = $(event.currentTarget).attr('rel');
+      var targetIds  = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
       var nonTargets = $('.scape-ui-block').not(targetIds);
 
-      if (nonTargets.length) {
-        nonTargets.fadeOut(fadeInTargets);
-      } else {
-        fadeInTargets();
-      }
+      nonTargets.fadeOut();
+      nonTargets.promise().done(function(){ $(targetIds).fadeIn(); });
     }
   });
 
