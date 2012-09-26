@@ -35,6 +35,8 @@
 
     },
 
+    WELLS_IN_COLUMN_MAJOR_ORDER: ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2", "A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3", "A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4", "A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5", "A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6", "A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7", "A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8", "A9", "B9", "C9", "D9", "E9", "F9", "G9", "H9", "A10", "B10", "C10", "D10", "E10", "F10", "G10", "H10", "A11", "B11", "C11", "D11", "E11", "F11", "G11", "H11", "A12", "B12", "C12", "D12", "E12", "F12", "G12", "H12"],
+
     dim: function() { $(this).fadeTo('fast', 0.2); },
 
 
@@ -125,7 +127,6 @@
       return true;
     });
 
-    // Setup the changing
     $(document).on('click','.navbar-link', SCAPE.linkHandler);
   });
 
@@ -307,139 +308,79 @@
 
   });
 
+
+  ////////////////////////////////////////////////////////////////////
+  // Custom pooling...
   $(document).on('pageinit','#custom-pooling-page',function(event) {
-    var sourceWell        = undefined;
-    var destinationWell   = undefined;
 
-     var undimAliquots = function(){
-      $('.well, .aliquot').css('opacity', '1.0');
+    SCAPE.preCapPools = function(sequencingPools, masterPlexLevel){
+      var wells, transfers = {};
+
+      for (var pool in sequencingPools) {
+        wells           = SCAPE.plate.sequencingPools[pool].wells;
+        transfers[pool] = SCAPE.preCapPool(wells, masterPlexLevel);
+      }
+      return transfers;
     };
 
-    var setPoolingValue = function(sourceWell, destinationWell) {
-      var destination        = getLocation(destinationWell);
-      var oldDestination     = getLocation(sourceWell);
-      var oldDestinationWell = $('#destination_plate .well[data-location    = ' + oldDestination + ']');
+    SCAPE.preCapPool = function(sequencingPool, plexLevel){
+      var pool = [];
 
-      sourceWell.find('.aliquot').
-        text(destination).
-        addClass('aliquot source_aliquot ' + SCAPE.coloursByLocation[destination]).
-        attr('data-destination-well', destination);
+      for (var i =0; i < sequencingPool.length; i = i + plexLevel){
+        pool.push(sequencingPool.slice(i, i + plexLevel));
+      }
 
-      sourceWell.find('input').val(destination);
+      return pool;
+    };
 
-      addAliquot(destinationWell);
+    var newAliquot = function(poolNumber){
+      return $(document.createElement('div')).addClass('aliquot colour-' + poolNumber);
+    };
 
-      resetAliquotCounts();
 
-      $('#destination_plate .well[data-aliquot-count=0]').children().remove();
+    SCAPE.renderDestinationPools = function(preCapPools){
+      var seqPool, pool, well, newInput, source_well;
+      var unwrappedPools = [];
+
+      $('.destination-plate .well').empty();
+      $('.destination-plate input').detach();
+
+      for (seqPool in preCapPools){
+        for (pool in preCapPools[seqPool]){
+          unwrappedPools.push(preCapPools[seqPool][pool]);
+        }
+      }
+
+      for (var i = 0, l = unwrappedPools.length; i < l; i++){
+        well = $('.destination-plate .well_' + SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]);
+        well.append(newAliquot(i + 1));
+
+        for (var j in unwrappedPools[i]){
+          source_well = unwrappedPools[i][j];
+
+          newInput = $(document.createElement('input'));
+          newInput.attr('name', 'plate[transfers][' + source_well + ']');
+          newInput.attr('type', 'hidden');
+          newInput.val(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]);
+
+          $('.destination-plate').append(newInput);
+        }
+      }
 
     };
 
-    function resetAliquotCounts(){
-      var poolingDestinations = $('.source_well .aliquot').map(function(_, el){
-        return $(el).attr('data-destination-well');
-      });
 
-      poolingDestinations = _.uniq(poolingDestinations);
+    $(document).on('change', '#master-plex-level', function(event){
+      // Forms return strings! Always a fun thing to forget...
+      var plexLevel   = parseInt($(event.currentTarget).val(), 10);
+      var preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
 
-      $('#destination_plate .well').attr('data-aliquot-count', 0);
+      SCAPE.renderDestinationPools(preCapPools);
+    });
 
-      _.each(poolingDestinations, function(wellLocation){
-        var aliquotCount = $('.source_aliquot[data-destination-well=' + wellLocation + ']').length;
-
-        $('#destination_plate .well[data-location='+ wellLocation + ']').attr('data-aliquot-count', aliquotCount);
-      });
-
-    }
-
-    function newAliquot(destinationWell){
-      var location = getLocation(destinationWell);
-      var aliquot  = $.createElement('div');
-
-      aliquot.
-        attr('id', 'aliquot_' + location).
-        addClass('aliquot').
-        addClass(SCAPE.coloursByLocation[location]).
-        text(location);
-
-      return aliquot;
-    }
-
-    function addAliquot(destinationWell){
-      if (destinationWell.html().trim() === '') {
-        destinationWell.append(newAliquot(destinationWell));
-      }
-    }
-
-    function getLocation(el){
-      return $(el).attr('id').match(/^.*_([A-H]\d+)$/)[1];
-    }
-
-    function aliquotsByDestination(el){
-      return $('.source_aliquot').not(':contains('+ getLocation(el) +')');
-    }
-
-    function poolingHandler(){
-      setPoolingValue(sourceWell, $(this));
-      destinationWell = undefined;
-      $('#destination_plate .well').unbind();
-      undimAliquots();
-    }
-
-    function initialisePoolValues(){
-      var i;
-      var destination_pools = $('.source_aliquot').map(function(){
-        return  [ $(this).text().trim(), $(this).data('pool') ];
-      });
-
-      destination_pools = _.uniq(destination_pools);
-      for (i=0;i<destination_pools.length; i = i + 2){
-        $('#destination_plate .well[data-location=' + destination_pools[i] + ']').attr('data-pool', destination_pools[i+1]);
-      }
-    }
-
-    // This function ensures that the hidden form values always start with the
-    // expected values even if someone reloads the page (otherwise the form will
-    // retain the previous values but page won't show them).
-    function initialiseTransferFormValues(){
-      $('.source_well').each(function(){
-        var dest = $(this).find('.aliquot').attr('data-destination-well');
-        $(this).find('input').val(dest);
-      });
-    }
-
-    // Custom pooling code starts here...
-    initialisePoolValues();
-
-    initialiseTransferFormValues();
-
-    //Change click to toggle so that operation can be aborted...
-    $('.source_well').toggle(
-      function(){
-        sourceWell    = $(this);
-        var sourceAliquot = sourceWell.find('.aliquot');
-        var sourcePool    = sourceAliquot.data('pool');
-
-        // Dim other source wells...
-        $('.source_aliquot').not(sourceAliquot).each(SCAPE.dim);
-
-        // Remove highlighting behaviour from aliquots on destination plate
-        $('#destination_plate .aliquot').unbind();
-
-        // dim wells used by other submissions...
-        $('#destination_plate .well').not('[data-pool=""]').not('[data-pool=' + sourcePool + ']').each(SCAPE.dim);
-
-        // Add the handler to unused wells or wells used by this submission...
-        $('#destination_plate .well').filter('[data-pool=' + sourcePool +'],[data-pool=""]').click(poolingHandler);
-      },
-
-      function() {
-        $('#destination_plate .well').unbind();
-        undimAliquots();
-      }
-    );
-
-    resetAliquotCounts();
   });
+
+
+
 })(window, jQuery);
 
