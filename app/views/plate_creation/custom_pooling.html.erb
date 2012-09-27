@@ -31,7 +31,7 @@
           <h2>Source Plate</h2>
           <div data-role="fieldcontain">
             <label for="master-plex-level">Master Plex level:</label>
-            <input type="range" name="master-plex-level" id="master-plex-level" data-highlight="true" value="4" min="1" max="96" />
+            <input type="number" name="master-plex-level" id="master-plex-level" data-highlight="true" value="4" min="1" max="96" />
           </div>
 
           <div class="instructions ui-blody">
@@ -57,7 +57,6 @@
       <div class="ui-block-b">
         <div id="input-plate-block" class="scape-ui-block">
           <%= render :partial => "plates/empty_plate", :locals => {:css_class => 'source-plate'} %>
-          <%#= render :partial => "pooled_plate", :locals => {:plate_presenter => @creation_form, :form => form} %>
         </div>
       </div>
 
@@ -105,12 +104,12 @@
     }
 
     // Extend SCAPE as it could have already been defined in the view.
+    // Sequencing Pool ordering relys on Ruby 1.9 hashes being ordered
     $.extend(SCAPE, {
       coloursByLocation: <%= colours_by_location.to_json.html_safe %>,
       plate: {
         tabViews: <%= @creation_form.tab_views.to_json.html_safe %>,
-        sequencingPools: <%= @creation_form.plate.pools.to_json.html_safe %>,
-        transferPreview: <%= @creation_form.transfer_preview.to_json.html_safe %>
+        sequencingPools: <%= Hash[ @creation_form.plate.pools.sort_by {|k,v| v['wells'].first } ].to_json.html_safe %>
       }
     });
 

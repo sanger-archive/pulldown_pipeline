@@ -372,7 +372,7 @@
 
       for (var i = 0, l = unwrappedPools.length; i < l; i++){
         well = $('.destination-plate .well_' + SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]);
-        well.append(SCAPE.newAliquot(i + 1));
+        well.append(SCAPE.newAliquot(i + 1, SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]));
 
         for (var j in unwrappedPools[i]){
           source_well = unwrappedPools[i][j];
