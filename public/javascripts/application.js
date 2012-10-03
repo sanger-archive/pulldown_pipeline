@@ -38,6 +38,8 @@
     WELLS_IN_COLUMN_MAJOR_ORDER: ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2", "A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3", "A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4", "A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5", "A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6", "A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7", "A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8", "A9", "B9", "C9", "D9", "E9", "F9", "G9", "H9", "A10", "B10", "C10", "D10", "E10", "F10", "G10", "H10", "A11", "B11", "C11", "D11", "E11", "F11", "G11", "H11", "A12", "B12", "C12", "D12", "E12", "F12", "G12", "H12"],
 
 
+    linkCallbacks: $.Callbacks(),
+
     linkHandler: function(event){
       var targetTab  = $(event.currentTarget).attr('rel');
       var targetIds  = '#'+SCAPE.plate.tabViews[targetTab].join(', #');
@@ -45,12 +47,74 @@
 
       nonTargets.fadeOut();
       nonTargets.promise().done(function(){ $(targetIds).fadeIn(); });
+    },
+
+
+    StateMachine: function(delegateTarget, states){
+      var sm             = this;
+      var stateNames     = _.keys(states);
+      var stateCallbacks = {};
+      sm.delegateTarget  = $(delegateTarget);
+
+      var beforeCallback = function(event){
+        sm.delegateTarget.off();
+      };
+
+
+      var afterCallback = function(newState){
+        sm.currentState = newState;
+        console.debug('Entering '+newState+' state...');
+      };
+
+
+      var callbacks, otherStates;
+      for (var stateName in states){
+        otherStates = _.difference(stateNames, stateName);
+
+        callbacks = [
+          beforeCallback,
+          states[stateName].enter
+        ];
+
+        callbacks = callbacks.concat(otherStates.map(
+          function(otherStateName){
+            return function(){
+              if(sm.currentState === otherStateName)
+              return states[otherStateName].leave();
+            };
+        }
+        ));
+
+        callbacks = _.compact(callbacks).concat(afterCallback);
+
+        stateCallbacks[stateName] = $.Callbacks().add(callbacks);
+      }
+
+
+      sm.transitionTo = function(newState){
+        if (newState != sm.currentState)
+          stateCallbacks[newState].fire(newState, sm.delegateTarget);
+      };
+
+
+      sm.transitionLink = function(e){
+        var newState = $.cssToCamel($(e.currentTarget).attr('rel'));
+        sm.transitionTo(newState);
+      };
     }
   });
 
   // Extend jQuery...
   $.extend($.fn, {
-    dim: function() { this.fadeTo('fast', 0.2); return this; }
+    dim:        function() { this.fadeTo('fast', 0.2); return this; }
+  });
+
+  $.extend($, {
+    cssToCamel: function(string) {
+      return string.replace(/-([a-z])/gi, function(s, group1) {
+        return group1.toUpperCase();
+      });
+    }
   });
 
 
@@ -58,6 +122,10 @@
   // # Page events....
 
   $(document).on('pageinit', function(){
+    SCAPE.linkCallbacks.add(SCAPE.linkHandler);
+
+    $(document).on('click','.navbar-link', SCAPE.linkCallbacks.fire);
+
     // Trap the carriage return sent by the swipecard reader
     $(document).on("keydown", "input.card-id", function(e) {
       var code=e.charCode || e.keyCode;
@@ -123,7 +191,6 @@
       return true;
     });
 
-    $(document).on('click','.navbar-link', SCAPE.linkHandler);
   });
 
   $(document).on('pagecreate','#plate-show-page', function(event) {
@@ -309,6 +376,8 @@
   // Custom pooling...
   $(document).on('pageinit','#custom-pooling-page',function(event) {
 
+
+
     // Pure function
     SCAPE.preCapPools = function(sequencingPools, masterPlexLevel){
       var wells, transfers = {};
@@ -403,7 +472,7 @@
       }
     };
 
-    $(document).on('change', '#master-plex-level', function(event){
+    var masterPlexHandler = function(event){
       // Forms return strings! Always a fun thing to forget...
       var plexLevel   = parseInt($(event.currentTarget).val(), 10);
       var preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
@@ -413,9 +482,47 @@
       SCAPE.renderSourceWells(unwrappedPools);
 
       $('.aliquot').fadeIn('slow');
+    };
+
+
+
+
+    SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {
+      'masterSettings': {
+        enter: function(_, delegateTarget){
+          delegateTarget.on('change', '#master-plex-level', masterPlexHandler);
+        },
+
+        leave: function(){
+          console.debug('leaving masterSettings');
+        }
+
+      },
+
+      'editPool': {
+        enter: function(){
+        },
+
+        leave: function(){
+          console.debug('leaving editPool');
+        }
+      },
+
+      'movePools': {
+        enter: function(){
+        },
+
+        leave: function(){
+          console.debug('leaving movePools');
+        }
+      }
     });
 
-    $('#master-plex-level').trigger('change');
+    SCAPE.linkCallbacks.add(SCAPE.poolingSM.transitionLink);
+    SCAPE.poolingSM.transitionTo('masterSettings');
+    $('#master-plex-level').change();
+
+
     $('.create-button').button('disable');
   });
 
