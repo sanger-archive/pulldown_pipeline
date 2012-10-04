@@ -92,8 +92,10 @@
 
 
       sm.transitionTo = function(newState){
+        if (stateCallbacks[newState] === undefined) throw "Unknown State: " + newState;
+
         if (newState != sm.currentState)
-          stateCallbacks[newState].fire(newState, sm.delegateTarget);
+          return stateCallbacks[newState].fire(newState, sm.delegateTarget);
       };
 
 
@@ -404,87 +406,90 @@
     };
 
     // Pure function
-    SCAPE.newAliquot = function(poolNumber, wellText){
+    SCAPE.newAliquot = function(poolNumber, poolID){
+      var poolNumberInt = parseInt(poolNumber,10);
+
       return $(document.createElement('div')).
-        addClass('aliquot colour-' + poolNumber).
-        text(wellText || '\u00A0').
+        addClass('aliquot colour-' + (poolNumberInt+1)).
+        attr('data-pool-id', poolID).
+        text(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumberInt] || '\u00A0').
         hide();
     };
 
-    // Pure function
-    // Takes a preCapPools data structure
-    // Returns an array of arrays containing the Pre-Cap pools in order:-
-    // [
-    //    [FIRST PRECAP POOL],
-    //    [SECOND PRECAP POOL],
-    //    ...
-    //    [ 'A12', 'B12', ... ]
-    // ]
-    SCAPE.unwrappedPools = function(preCapPools){
-      var pool, seqPool, unwrappedPools = [];
 
-      for (seqPool in preCapPools){
-        for (pool in preCapPools[seqPool]){
-          unwrappedPools.push(preCapPools[seqPool][pool]);
+    var walkPreCapPools = function(preCapPools, block){
+      var poolNumber = -1;
+      for (var seqPoolID in preCapPools){
+        for (var poolIndex in preCapPools[seqPoolID]){
+          poolNumber++;
+          block(preCapPools[seqPoolID][poolIndex], poolNumber, seqPoolID);
         }
       }
-
-      return unwrappedPools;
     };
 
 
-    SCAPE.renderDestinationPools = function(unwrappedPools){
-      var well, newInput, source_well;
+    SCAPE.renderDestinationPools = function(preCapPools){
+      var well;
 
       $('.destination-plate .well').empty();
-      $('.destination-plate input').detach();
 
-      for (var i = 0, l = unwrappedPools.length; i < l; i++){
-        well = $('.destination-plate .well_' + SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]);
-        well.append(SCAPE.newAliquot(i + 1, SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]));
-
-        for (var j in unwrappedPools[i]){
-          source_well = unwrappedPools[i][j];
-
-          newInput = $(document.createElement('input'));
-          newInput.attr('name', 'plate[transfers]['+source_well+']');
-          newInput.attr('type', 'hidden');
-          newInput.val(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[i]);
-
-          $('.destination-plate').append(newInput);
-        }
-      }
+      walkPreCapPools(preCapPools, function(preCapPool, poolNumber, seqPoolID){
+        well = $('.destination-plate .' + SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]);
+        well.append(SCAPE.newAliquot(poolNumber, seqPoolID));
+      });
     };
 
 
-    SCAPE.renderSourceWells = function(unwrappedPools){
+    SCAPE.renderSourceWells = function(preCapPools){
       $('.source-plate .well').empty();
+      $('.source-plate input').detach();
 
-      for (var poolIndex = 0, count = unwrappedPools.length; poolIndex < count; poolIndex++){
+      walkPreCapPools(preCapPools,function(preCapPool, poolNumber, seqPoolID){
+        var newInput;
 
-        for (var wellIndex in unwrappedPools[poolIndex]){
-          $('.source-plate .well_'+unwrappedPools[poolIndex][wellIndex]).
-            append(
-              SCAPE.newAliquot(poolIndex+1,
-              SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolIndex]) );
+        for (var wellIndex in preCapPool){
+          $('.source-plate .'+preCapPool[wellIndex]).
+            append( SCAPE.newAliquot(poolNumber, seqPoolID) );
+
+          newInput = $(document.createElement('input')).
+            attr('name', 'plate[transfers]['+preCapPool[wellIndex]+']').
+            attr('type', 'hidden').
+            val(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]);
+
+          $('.source-plate').append(newInput);
         }
-
-      }
+      });
     };
+
 
     var masterPlexHandler = function(event){
       // Forms return strings! Always a fun thing to forget...
       var plexLevel   = parseInt($(event.currentTarget).val(), 10);
-      var preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
-      var unwrappedPools = SCAPE.unwrappedPools(preCapPools);
+      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
 
-      SCAPE.renderDestinationPools(unwrappedPools);
-      SCAPE.renderSourceWells(unwrappedPools);
+      SCAPE.renderSourceWells(SCAPE.plate.preCapPools);
+      SCAPE.renderDestinationPools(SCAPE.plate.preCapPools);
 
       $('.aliquot').fadeIn('slow');
     };
 
 
+    var poolIdFromLocation = function(sequencingPools, location){
+      return _.detect(
+        sequencingPools,
+        function(pool){ return _.contains(pool.wells,'A1'); }
+      ).id;
+    };
+
+    var highlightCurrentPool = function(currentPool){
+      $('.source-plate .well').
+        not(
+          '.source-plate .well.' +
+          _.flatten(currentPool).
+            join(',.source-plate .well.')).
+        find('.aliquot').
+        dim();
+    };
 
 
     SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {
@@ -500,11 +505,33 @@
       },
 
       'editPool': {
-        enter: function(){
+        enter: function(_, delegateTarget){
+          delegateTarget.on('click', '.source-plate .aliquot', function(event){
+
+            SCAPE.plate.currentPool = poolIdFromLocation(
+              SCAPE.plate.sequencingPools,
+              $(event.currentTarget).closest('.well').data('location'));
+
+            SCAPE.poolingSM.transitionTo('editPoolSelected');
+          });
+
+          $('.destination-plate').css('opacity',0.3);
         },
 
         leave: function(){
-          console.debug('leaving editPool');
+          $('.destination-plate').css('opacity',1);
+        }
+      },
+
+      'editPoolSelected': {
+        enter: function(){
+          // highlightCurrentPool()
+
+        },
+
+        leave: function(){
+
+          $('.aliquot').css('opacity', 1);
         }
       },
 

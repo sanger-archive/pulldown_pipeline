@@ -14,7 +14,7 @@
         <th class="first-col"><%= row_label %></th>
         <% (1..12).each do | index| %>
           <td class="col-all <%= "col-#{index}" %>">
-            <div class="well <%= "col-#{index}" %> <%= "well_#{row_label}#{index}" %>">
+            <div class="well <%= "col-#{index}" %> <%= "#{row_label}#{index}" %>" data-location="<%= "#{row_label}#{index}"%>">
             </div>
           </td>
         <% end %>
