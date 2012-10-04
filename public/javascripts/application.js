@@ -406,50 +406,61 @@
     };
 
     // Pure function
-    SCAPE.newAliquot = function(poolNumber, poolID){
+    SCAPE.newAliquot = function(poolNumber, poolID, aliquotText){
       var poolNumberInt = parseInt(poolNumber,10);
 
       return $(document.createElement('div')).
         addClass('aliquot colour-' + (poolNumberInt+1)).
         attr('data-pool-id', poolID).
-        text(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumberInt] || '\u00A0').
+        text(aliquotText || '\u00A0').
         hide();
     };
 
 
     var walkPreCapPools = function(preCapPools, block){
-      var poolNumber = -1;
+      var poolNumber = -1, seqPoolIndex = -1;
       for (var seqPoolID in preCapPools){
+        seqPoolIndex++;
+
         for (var poolIndex in preCapPools[seqPoolID]){
           poolNumber++;
-          block(preCapPools[seqPoolID][poolIndex], poolNumber, seqPoolID);
+          block(preCapPools[seqPoolID][poolIndex], poolNumber, seqPoolID, seqPoolIndex);
         }
       }
     };
 
 
-    SCAPE.renderDestinationPools = function(preCapPools){
+    SCAPE.renderDestinationPools = function(){
+      var preCapPools = SCAPE.plate.preCapPools;
       var well;
 
       $('.destination-plate .well').empty();
 
-      walkPreCapPools(preCapPools, function(preCapPool, poolNumber, seqPoolID){
+      $('.destination-plate .well').removeClass (function (index, css) {
+        return (css.match (/\bseqPool-\d+/g) || []).join(' ');
+      });
+
+      walkPreCapPools(preCapPools, function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
         well = $('.destination-plate .' + SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]);
-        well.append(SCAPE.newAliquot(poolNumber, seqPoolID));
+
+
+        well.addClass('seqPool-'+(seqPoolIndex+1));
+        well.append(SCAPE.newAliquot(poolNumber, seqPoolID, preCapPool.length));
       });
     };
 
 
-    SCAPE.renderSourceWells = function(preCapPools){
+    SCAPE.renderSourceWells = function(){
+      var preCapPools = SCAPE.plate.preCapPools;
       $('.source-plate .well').empty();
       $('.source-plate input').detach();
 
-      walkPreCapPools(preCapPools,function(preCapPool, poolNumber, seqPoolID){
-        var newInput;
+      walkPreCapPools(preCapPools,function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
+        var newInput, well;
 
         for (var wellIndex in preCapPool){
-          $('.source-plate .'+preCapPool[wellIndex]).
-            append( SCAPE.newAliquot(poolNumber, seqPoolID) );
+          well = $('.source-plate .'+preCapPool[wellIndex]).addClass('seqPool-'+(seqPoolIndex+1));
+          well.append( SCAPE.newAliquot(poolNumber, seqPoolID, SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]));
 
           newInput = $(document.createElement('input')).
             attr('name', 'plate[transfers]['+preCapPool[wellIndex]+']').
@@ -467,8 +478,8 @@
       var plexLevel   = parseInt($(event.currentTarget).val(), 10);
       SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
 
-      SCAPE.renderSourceWells(SCAPE.plate.preCapPools);
-      SCAPE.renderDestinationPools(SCAPE.plate.preCapPools);
+      SCAPE.renderSourceWells();
+      SCAPE.renderDestinationPools();
 
       $('.aliquot').fadeIn('slow');
     };
@@ -477,17 +488,12 @@
     var poolIdFromLocation = function(sequencingPools, location){
       return _.detect(
         sequencingPools,
-        function(pool){ return _.contains(pool.wells,'A1'); }
+        function(pool){ return _.contains(pool.wells, location); }
       ).id;
     };
 
-    var highlightCurrentPool = function(currentPool){
-      $('.source-plate .well').
-        not(
-          '.source-plate .well.' +
-          _.flatten(currentPool).
-            join(',.source-plate .well.')).
-        find('.aliquot').
+    var highlightCurrentPool = function(){
+      $('.aliquot[data-pool-id!="'+SCAPE.plate.currentPool+'"]').
         dim();
     };
 
@@ -507,12 +513,12 @@
       'editPool': {
         enter: function(_, delegateTarget){
           delegateTarget.on('click', '.source-plate .aliquot', function(event){
-
             SCAPE.plate.currentPool = poolIdFromLocation(
               SCAPE.plate.sequencingPools,
               $(event.currentTarget).closest('.well').data('location'));
 
             SCAPE.poolingSM.transitionTo('editPoolSelected');
+            highlightCurrentPool();
           });
 
           $('.destination-plate').css('opacity',0.3);
@@ -524,14 +530,26 @@
       },
 
       'editPoolSelected': {
-        enter: function(){
-          // highlightCurrentPool()
+        enter: function(_, delegateTarget){
+
+          delegateTarget.on('change', '#per-pool-plex-level', function(event){
+            var plexLevel   = parseInt($(event.currentTarget).val(), 10);
+
+            SCAPE.plate.preCapPools[SCAPE.plate.currentPool] = SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
+
+            SCAPE.renderSourceWells();
+            SCAPE.renderDestinationPools();
+
+            highlightCurrentPool();
+            $('.aliquot').fadeIn('slow');
+          });
+
 
         },
 
         leave: function(){
-
           $('.aliquot').css('opacity', 1);
+          SCAPE.plate.currentPool = undefined;
         }
       },
 
