@@ -379,7 +379,6 @@
 
 
 
-    // Pure function
     SCAPE.preCapPools = function(sequencingPools, masterPlexLevel){
       var wells, transfers = {};
 
@@ -390,21 +389,16 @@
       return transfers;
     };
 
-    // Pure function
-    // Takes a sequencingPool data structure and an integer plexLevel
-    // Returns an array of arrays
-    // each sub array representing a pre-cap pool
     SCAPE.preCapPool = function(sequencingPool, plexLevel){
-      var pool = [];
+      var wells = [];
 
       for (var i =0; i < sequencingPool.length; i = i + plexLevel){
-        pool.push(sequencingPool.slice(i, i + plexLevel));
+        wells.push(sequencingPool.slice(i, i + plexLevel));
       }
 
-      return pool;
+      return { plexLevel: plexLevel, wells: wells };
     };
 
-    // Pure function
     SCAPE.newAliquot = function(poolNumber, poolID, aliquotText){
       var poolNumberInt = parseInt(poolNumber,10);
 
@@ -421,9 +415,9 @@
       for (var seqPoolID in preCapPools){
         seqPoolIndex++;
 
-        for (var poolIndex in preCapPools[seqPoolID]){
+        for (var poolIndex in preCapPools[seqPoolID].wells){
           poolNumber++;
-          block(preCapPools[seqPoolID][poolIndex], poolNumber, seqPoolID, seqPoolIndex);
+          block(preCapPools[seqPoolID].wells[poolIndex], poolNumber, seqPoolID, seqPoolIndex);
         }
       }
     };
@@ -542,6 +536,7 @@
           var slider = $('#per-pool-plex-level').
             textinput('enable').
             slider('enable').
+            val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
             siblings('.ui-slider');
 
           delegateTarget.on('mousedown touchstart', slider, function(event){
@@ -568,7 +563,7 @@
 
         leave: function(){
           $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
-          $('#per-pool-plex-level').textinput('disable').slider('disable');
+          $('#per-pool-plex-level').textinput('disable').slider('disable').val('');
           SCAPE.plate.currentPool = undefined;
         }
       },
