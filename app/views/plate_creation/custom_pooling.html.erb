@@ -1,11 +1,12 @@
 <%= page(:'custom-pooling-page') do %>
   <div data-role="header">
-    <h1>Custom pooling</h1>
+    <h1>Pre-Cap pooling</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#" class="navbar-link ui-btn-active" rel="master-settings">Master Plex Level</a></li>
         <li><a href="#" class="navbar-link" rel="edit-pool" >Edit Pre-cap pools</a></li>
         <li><a href="#" class="navbar-link" rel="move-pools" >Move Pools</a></li>
+        <li><a href="#" class="navbar-link" rel="pooling-summary" >Pooling Summary</a></li>
       </ul>
     </div>
   </div>
@@ -31,7 +32,7 @@
           <h2>Source Plate</h2>
           <div data-role="fieldcontain">
             <label for="master-plex-level">Master Plex level:</label>
-            <input type="number" name="master-plex-level" id="master-plex-level" data-highlight="true" value="4" min="1" max="96" />
+            <input type="range" name="master-plex-level" id="master-plex-level" data-highlight="true" value="4" min="1" max="96" />
           </div>
 
           <div class="instructions ui-blody">
@@ -48,10 +49,14 @@
         <div id="edit-pool-instruction-block" class="scape-ui-block" style="display:none;">
           edit instruction
         </div>
+
         <div id="move-pools-instruction-block" class="scape-ui-block" style="display:none;">
           move-pools instructions
         </div>
 
+        <div id="pooling-summary-block" class="scape-ui-block" style="display:none;">
+          Summary of pools
+        </div>
       </div>
 
       <div class="ui-block-b">
@@ -68,22 +73,29 @@
         <div id="create-plate-block" class="scape-ui-block">
           <h2>Destination Plate</h2>
           <br/>
-          <%= form.submit 'Create Plate',
-            :class        => 'create-button',
-            :'data-theme' => 'b',
-            :'data-icon'  => 'plus'
-          %>
         </div>
 
         <div id="edit-pool-block" class="scape-ui-block" style="display:none;">
           <div data-role="fieldcontain">
             <label for="per-pool-plex-level">Individual Plex level:</label>
-            <input type="number" name="per-pool-plex-level" id="per-pool-plex-level" data-highlight="true" value="4" min="1" max="96" />
+            <input type="range"
+            name="per-pool-plex-level" id="per-pool-plex-level"
+            data-highlight="true" value="4"
+            min="1" max="96"
+            disabled="disabled" />
           </div>
         </div>
 
         <div id="move-pools-block" class="scape-ui-block" style="display:none;">
           MOVE POOLs
+        </div>
+
+        <div id="create-plate-block" class="scape-ui-block" style="display:none;">
+          <%= form.submit 'Add Pre-Cap pool Plate',
+            :class        => 'create-button',
+            :'data-theme' => 'b',
+            :'data-icon'  => 'plus'
+          %>
         </div>
       </div>
 

@@ -63,7 +63,6 @@
 
       var afterCallback = function(newState){
         sm.currentState = newState;
-        console.debug('Entering '+newState+' state...');
       };
 
 
@@ -494,7 +493,11 @@
 
     var highlightCurrentPool = function(){
       $('.aliquot[data-pool-id!="'+SCAPE.plate.currentPool+'"]').
+        removeClass('big-aliquot').
         dim();
+
+      $('.aliquot[data-pool-id="'+SCAPE.plate.currentPool+'"]').
+        addClass('selected-aliquot');
     };
 
 
@@ -505,7 +508,6 @@
         },
 
         leave: function(){
-          console.debug('leaving masterSettings');
         }
 
       },
@@ -518,24 +520,40 @@
               $(event.currentTarget).closest('.well').data('location'));
 
             SCAPE.poolingSM.transitionTo('editPoolSelected');
-            highlightCurrentPool();
           });
 
           $('.destination-plate').css('opacity',0.3);
+          $('.source-plate .aliquot').addClass('big-aliquot');
         },
 
         leave: function(){
           $('.destination-plate').css('opacity',1);
+
+          $('.aliquot').
+            removeClass('selected-aliquot big-aliquot');
         }
       },
 
       'editPoolSelected': {
         enter: function(_, delegateTarget){
 
-          delegateTarget.on('change', '#per-pool-plex-level', function(event){
-            var plexLevel   = parseInt($(event.currentTarget).val(), 10);
 
-            SCAPE.plate.preCapPools[SCAPE.plate.currentPool] = SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
+          // We need to grab events on the slider for grab and release...
+          var slider = $('#per-pool-plex-level').
+            textinput('enable').
+            slider('enable').
+            siblings('.ui-slider');
+
+          delegateTarget.on('mousedown touchstart', slider, function(event){
+            $('.aliquot[data-pool-id="'+SCAPE.plate.currentPool+'"]').removeClass('selected-aliquot');
+          });
+
+
+          delegateTarget.on('mouseup touchend', slider, function(event){
+            var plexLevel = parseInt($('#per-pool-plex-level').val(), 10);
+
+            SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
+              SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
 
             SCAPE.renderSourceWells();
             SCAPE.renderDestinationPools();
@@ -545,10 +563,12 @@
           });
 
 
+          highlightCurrentPool();
         },
 
         leave: function(){
-          $('.aliquot').css('opacity', 1);
+          $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
+          $('#per-pool-plex-level').textinput('disable').slider('disable');
           SCAPE.plate.currentPool = undefined;
         }
       },
@@ -558,7 +578,14 @@
         },
 
         leave: function(){
-          console.debug('leaving movePools');
+        }
+      },
+
+      'poolingSummary': {
+        enter: function(){
+        },
+
+        leave: function(){
         }
       }
     });

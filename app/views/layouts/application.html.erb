@@ -13,6 +13,17 @@
             ajaxEnabled: false
         });
       });
+
+
+      $(document).on({
+        "mousedown touchstart": function () {
+          $(this).siblings('input').trigger('start');
+        },
+
+        "mouseup touchend": function () {
+          $(this).siblings('input').trigger('stop');
+        }
+      }, ".ui-slider");
     </script>
     <%= javascript_include_tag 'jquery.mobile', 'application' %>
 

@@ -24,6 +24,11 @@ module Forms
       'move-pools'      => [
         'move-pools-instruction-block', 'input-plate-block',
                     'move-pools-block', 'output-plate-block'
+      ],
+
+      'pooling-summary'      => [
+        'pooling-summary-block', 'input-plate-block',
+           'create-plate-block', 'output-plate-block'
       ]
     }
 

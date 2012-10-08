@@ -124,6 +124,19 @@ body {
   transition:         all 0.1s ease-in-out 0s;
 }
 
+.big-aliquot {
+  @include box-shadow(#00060A 0 8px 8px);
+  position: relative;
+  top: -3px;
+  left: -3px;
+  width: 32px;
+  height: 26px;
+  padding: 6px 0 0 0;
+  @include border-radius(32px);
+  -webkit-transition: all 0.1s ease-in-out 0s;
+  transition:         all 0.1s ease-in-out 0s;
+}
+
 
 @mixin labware-view {
   .green             { @include background(radial-gradient(top left, #00B10E, #002802)); }
