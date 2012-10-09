@@ -10,14 +10,14 @@
 
 
   <%= header(@presenter, 'Plate view') do %>
-    <div data-role="navbar">
+    <div data-role="navbar" data-iconpos="right">
       <ul id="navbar">
-        <li id="summary-button"><a href="#" class="navbar-link" rel="summary-button" data-transition="none" data-icon="info">Summary and Printing</a></li>
+        <li id="summary-button"><a data-theme="a" href="#" class="navbar-link" rel="summary-button" data-transition="none" data-icon="info">Summary and Printing</a></li>
         <% if current_user_uuid.present? -%>
-          <li id="plate-creation-button"><a href="#" class="navbar-link" rel="plate-creation-button" data-icon="add">Create Child Plate</a></li>
-          <li id="plate-QC-button"><a href="#" class="navbar-link" rel="plate-QC-button" data-icon="add">Create QC Plate</a></li>
-          <li id="plate-state-button"><a href="#" class="navbar-link" rel="plate-state-button" data-icon="gear">Change Plate State</a></li>
-          <li id="well-failing-button"><a href="#" class="navbar-link" rel="well-failing-button" data-icon="delete">Fail Wells</a></li>
+          <li id="plate-creation-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-creation-button" data-icon="add">Create Child Plate</a></li>
+          <li id="plate-QC-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-QC-button" data-icon="add">Create QC Plate</a></li>
+          <li id="plate-state-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-state-button" data-icon="gear">Change Plate State</a></li>
+          <li id="well-failing-button"><a data-theme="a" href="#" class="navbar-link" rel="well-failing-button" data-icon="delete">Fail Wells</a></li>
         <% end -%>
       </ul>
     </div>

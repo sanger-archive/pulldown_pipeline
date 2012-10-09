@@ -13,7 +13,7 @@ module Forms
     write_inheritable_attribute :tab_views, {
       'master-settings' => [
         'master-plex-level-block', 'input-plate-block',
-             'create-plate-block', 'output-plate-block'
+                                   'output-plate-block'
       ],
 
       'edit-pool'       => [

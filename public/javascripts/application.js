@@ -107,7 +107,7 @@
 
   // Extend jQuery...
   $.extend($.fn, {
-    dim:        function() { this.fadeTo('fast', 0.2); return this; }
+    dim: function() { this.fadeTo('fast', 0.2); return this; }
   });
 
   $.extend($, {
@@ -423,6 +423,22 @@
     };
 
 
+    var renderPoolingSummary = function(preCapPools){
+
+      walkPreCapPools(preCapPools, function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
+        var destinationWell = SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber];
+        var listElement = $('<li/>').
+          text(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]).
+          append('<div class="ui-li-count" data-theme="b">'+preCapPool.length+'</div>').
+          append('<div class="ui-li-aside">'+preCapPool.join(', ')+'</div>');
+
+        $('#pooling-summary').append(listElement);
+      });
+
+      $('#pooling-summary').listview('refresh');
+    };
+
+
     SCAPE.renderDestinationPools = function(){
       var preCapPools = SCAPE.plate.preCapPools;
       var well;
@@ -539,13 +555,8 @@
             val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
             siblings('.ui-slider');
 
-          delegateTarget.on('mousedown touchstart', slider, function(event){
-            $('.aliquot[data-pool-id="'+SCAPE.plate.currentPool+'"]').removeClass('selected-aliquot');
-          });
-
-
-          delegateTarget.on('mouseup touchend', slider, function(event){
-            var plexLevel = parseInt($('#per-pool-plex-level').val(), 10);
+          delegateTarget.on('change', '#per-pool-plex-level', function(event){
+            var plexLevel = parseInt($(event.currentTarget).val(), 10);
 
             SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
               SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
@@ -578,9 +589,14 @@
 
       'poolingSummary': {
         enter: function(){
+
+          renderPoolingSummary(SCAPE.plate.preCapPools);
+          $('.create-button').button('enable');
         },
 
         leave: function(){
+          $('#pooling-summary').empty();
+          $('.create-button').button('disable');
         }
       }
     });
