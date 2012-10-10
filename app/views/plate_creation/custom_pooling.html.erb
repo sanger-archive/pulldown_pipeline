@@ -13,17 +13,15 @@
 
 
   <%= content do %>
-        <%= semantic_form_for(
+        <%= form_for(
           @creation_form,
-          :url => pulldown_plate_children_path(@creation_form.parent),
-          :as => :plate,
-          :html => {:method => :post}) do |form|
+          :url  => pulldown_plate_children_path(@creation_form.parent),
+          :as   => :plate,
+          :html => { :method => :post }) do |form|
         %>
 
-        <%= form.inputs do %>
-          <%= form.input :plate_purpose_uuid, :as => :hidden, :value =>@creation_form.plate_purpose_uuid %>
-          <%= form.input :parent_uuid, :as => :hidden, :value => @creation_form.parent_uuid %>
-        <% end %>
+        <%= form.hidden_field :parent_uuid,        :value => @creation_form.parent_uuid %>
+        <%= form.hidden_field :plate_purpose_uuid, :value => @creation_form.plate_purpose_uuid %>
 
     <div class="ui-grid-a">
       <div id="source-block" class="ui-block-a">
@@ -37,6 +35,7 @@
               <li>Once you're happy with the plate layout you can go to the summary tab to create a new ISC lib pool plate.</li>
             </ol>
             <br/>
+            <p>Failed wells are not shown on the source plate.</p>
             <p><i>NB. Final pipeline pooling will be as per the original submission.</i></p>
           </div>
 
@@ -134,7 +133,7 @@
       coloursByLocation: <%= colours_by_location.to_json.html_safe %>,
       plate: {
         tabViews: <%= @creation_form.tab_views.to_json.html_safe %>,
-        sequencingPools: <%= Hash[ @creation_form.plate.pools.sort_by {|k,v| v['wells'].first } ].to_json.html_safe %>
+        sequencingPools: <%= sorted_sequencing_pool_json %>
       }
     });
 

@@ -16,89 +16,21 @@ module Forms
                                    'output-plate-block'
       ],
 
-      'edit-pool'       => [
+      'edit-pool' => [
         'edit-pool-instruction-block', 'input-plate-block',
                     'edit-pool-block', 'output-plate-block'
       ],
 
-      'move-pools'      => [
+      'move-pools' => [
         'move-pools-instruction-block', 'input-plate-block',
                     'move-pools-block', 'output-plate-block'
       ],
 
-      'pooling-summary'      => [
+      'pooling-summary' => [
         'pooling-summary-block', 'input-plate-block',
            'create-plate-block', 'output-plate-block'
       ]
     }
-
-    class TransferHelper
-      def initialize(transfers)
-        @transfers = transfers
-      end
-
-
-      def method_missing(name, *args, &block)
-        return @transfers[name.to_s] if name.to_s =~ /^[A-H]\d+$/
-
-        @transfers.send(name, *args, &block)
-      end
-
-      def respond_to?(name, include_private = false)
-        (name.to_s =~ /^[A-H]\d+$/) or @transfers.respond_to?(name, include_private)
-      end
-    end
-
-    class Well
-      attr_reader :location, :aliquots
-
-      def initialize(location)
-        @location = location
-        @aliquots = [:AN_ALIQUOT]
-      end
-    end
-
-    def pools_by_well
-      @pools_by_well ||= Hash[plate.wells.map { |well| [well.location, well.pool_id] }]
-    end
-
-    def pool(location)
-      pools_by_well[location]
-    end
-
-    def transfer_preview
-      @transfer_preview ||= TransferHelper.new(
-        api.transfer_template.find(
-          self.default_transfer_template_uuid
-        ).preview!(
-          :source      => parent_uuid,
-          :destination => parent_uuid,
-          :user        => user_uuid
-        ).transfers.reject { |from_well,to_well| to_well.blank? }
-      )
-    end
-
-    def transfers
-      @transfers || transfer_preview
-    end
-
-    def source_wells_by_row
-      PlateWalking::Walker.new(plate, plate.wells)
-    end
-
-    def wells_by_row
-      rows = Hash[('A'..'H').map { |row| [ row, [] ] }]
-
-      transfers.values.uniq.map do |location|
-        [PlateWalking::Walker::Location.new(location), CustomPoolingForm::Well.new(location)]
-      end.group_by do |location, _|
-        location.row
-      end.map do |row, location_and_well_pairs|
-        rows[row] = location_and_well_pairs.sort { |(a,_),(b,_)| a.column <=> b.column }.map(&:last)
-      end
-
-      rows
-    end
 
 
     def create_objects!(selected_transfer_template_uuid = default_transfer_template_uuid, &block)
