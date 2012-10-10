@@ -12,18 +12,13 @@ module Forms
 
     write_inheritable_attribute :tab_views, {
       'master-settings' => [
-        'master-plex-level-block', 'input-plate-block',
-                                   'output-plate-block'
+        'start-instructions-block', 'input-plate-block',
+        'master-plex-level-block',  'output-plate-block'
       ],
 
       'edit-pool' => [
         'edit-pool-instruction-block', 'input-plate-block',
                     'edit-pool-block', 'output-plate-block'
-      ],
-
-      'move-pools' => [
-        'move-pools-instruction-block', 'input-plate-block',
-                    'move-pools-block', 'output-plate-block'
       ],
 
       'pooling-summary' => [

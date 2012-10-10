@@ -26,7 +26,7 @@
     <div class="ui-grid-a">
       <div id="source-block" class="ui-block-a">
 
-        <div id="master-plex-level-block" class="scape-ui-block">
+        <div id="start-instructions-block" class="scape-ui-block">
           <div class="instructions ui-blody">
             <h3>Plate wide plex level</h3>
             <p>The master plex level can be used as a starting point for the ISC lib pool plate's layout.</p>
@@ -37,12 +37,6 @@
             <br/>
             <p>Failed wells are not shown on the source plate.</p>
             <p><i>NB. Final pipeline pooling will be as per the original submission.</i></p>
-          </div>
-
-          <h2>Source Plate</h2>
-          <div data-role="fieldcontain">
-            <label for="master-plex-level">Plate Master Plex level:</label>
-            <input type="range" name="master-plex-level" id="master-plex-level" data-highlight="true" value="4" min="1" max="96" />
           </div>
 
         </div>
@@ -61,12 +55,13 @@
           </div>
         </div>
 
-        <div id="move-pools-instruction-block" class="scape-ui-block" style="display:none;">
-          move-pools instructions
-        </div>
-
         <div id="create-plate-block" class="scape-ui-block" style="display:none;">
+          <div class="instructions ui-blody">
+            <h1>Layout Summary</h1>
+          </div>
+
           <br/>
+
           <%= form.submit 'Add Pre-Cap pool Plate',
             :class        => 'create-button',
             :'data-theme' => 'b',
@@ -85,6 +80,14 @@
 
     <div class="ui-grid-a">
       <div class="ui-block-a">
+        <div id="master-plex-level-block" class="scape-ui-block">
+          <h2>Source Plate</h2>
+          <div data-role="fieldcontain">
+            <label for="master-plex-level">Plate Master Plex level:</label>
+            <input type="range" name="master-plex-level" id="master-plex-level" data-highlight="true" value="8" min="1" max="96" />
+          </div>
+
+        </div>
 
         <div id="edit-pool-block" class="scape-ui-block" style="display:none;">
           <div data-role="fieldcontain">
@@ -97,12 +100,7 @@
           </div>
         </div>
 
-        <div id="move-pools-block" class="scape-ui-block" style="display:none;">
-          MOVE POOLs
-        </div>
-
         <div id="pooling-summary-block" class="scape-ui-block" style="display:none;">
-          <h2>Summary of pools</h2>
           <ul id="pooling-summary" data-role="listview" data-inset="true"></ul>
         </div>
 
@@ -111,7 +109,7 @@
       <div class="ui-block-b">
         <div id="output-plate-block" class="scape-ui-block">
           <%= render :partial => "plates/empty_plate", :locals => {:plate_presenter => @creation_form, :css_class => "destination-plate"} %>
-      </div>
+        </div>
       </div>
     </div>
     <% end %>
