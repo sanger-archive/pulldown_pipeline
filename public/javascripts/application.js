@@ -93,8 +93,7 @@
       sm.transitionTo = function(newState){
         if (stateCallbacks[newState] === undefined) throw "Unknown State: " + newState;
 
-        if (newState != sm.currentState)
-          return stateCallbacks[newState].fire(newState, sm.delegateTarget);
+        stateCallbacks[newState].fire(newState, sm.delegateTarget);
       };
 
 
@@ -493,6 +492,13 @@
       $('.aliquot').fadeIn('slow');
     };
 
+    var selectSeqPoolHandler = function(event){
+      SCAPE.plate.currentPool = poolIdFromLocation(
+        SCAPE.plate.sequencingPools,
+        $(event.currentTarget).closest('.well').data('location'));
+
+        SCAPE.poolingSM.transitionTo('editPoolSelected');
+    };
 
     var poolIdFromLocation = function(sequencingPools, location){
       return _.detect(
@@ -503,10 +509,11 @@
 
     var highlightCurrentPool = function(){
       $('.aliquot[data-pool-id!="'+SCAPE.plate.currentPool+'"]').
-        removeClass('big-aliquot').
+        removeClass('big-aliquot selected-aliquot').
         dim();
 
       $('.aliquot[data-pool-id="'+SCAPE.plate.currentPool+'"]').
+        css('opacity',1).
         addClass('selected-aliquot');
     };
 
@@ -514,23 +521,24 @@
     SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {
       'masterSettings': {
         enter: function(_, delegateTarget){
+          $('#master-plex-level').
+            textinput('enable').
+            slider('enable');
+
           delegateTarget.on('change', '#master-plex-level', masterPlexHandler);
         },
 
         leave: function(){
+          $('#master-plex-level').
+            textinput('disable').
+            slider('disable');
         }
 
       },
 
       'editPool': {
         enter: function(_, delegateTarget){
-          delegateTarget.on('click', '.source-plate .aliquot', function(event){
-            SCAPE.plate.currentPool = poolIdFromLocation(
-              SCAPE.plate.sequencingPools,
-              $(event.currentTarget).closest('.well').data('location'));
-
-            SCAPE.poolingSM.transitionTo('editPoolSelected');
-          });
+          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
           $('.destination-plate').css('opacity',0.3);
           $('.source-plate .aliquot').addClass('big-aliquot');
@@ -547,12 +555,13 @@
       'editPoolSelected': {
         enter: function(_, delegateTarget){
 
+          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
           // We need to grab events on the slider for grab and release...
           var slider = $('#per-pool-plex-level').
+            val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
             textinput('enable').
             slider('enable').
-            val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
             siblings('.ui-slider');
 
           delegateTarget.on('change', '#per-pool-plex-level', function(event){
@@ -589,7 +598,6 @@
 
       'poolingSummary': {
         enter: function(){
-
           renderPoolingSummary(SCAPE.plate.preCapPools);
           $('.create-button').button('enable');
         },
