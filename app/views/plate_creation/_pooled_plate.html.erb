@@ -27,7 +27,7 @@
                     class="aliquot <%=  'source_aliquot' unless destination_well.blank? %>
                     <%= colours_by_location[destination_well] || 'permanent-failure' %>" 
                     rel="<%= "#details_#{well.location}" %>"
-                    data-pool="<%= plate_presenter.pool(well.location) %>"
+                    data-pool="<%= well.pool_id %>"
                     data-destination-well=<%= destination_well %>
                     >
                       <%= destination_well %>

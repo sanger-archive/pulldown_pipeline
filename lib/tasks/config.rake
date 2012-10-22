@@ -22,7 +22,7 @@ namespace :config do
       end
     end
 
-    configuration[:plate_purposes] = {}.tap do |plate_purposes|
+    configuration[:purposes] = {}.tap do |plate_purposes|
       # Setup a hash that will enable us to lookup the form, presenter, and state changing classes
       # based on the name of the plate purpose.  We can then use that to generate the information for
       # the mapping from UUID.
