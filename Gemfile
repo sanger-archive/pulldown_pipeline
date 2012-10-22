@@ -21,6 +21,9 @@ gem 'sanger_barcode',
 group :development, :test do
     gem 'ruby-debug19', :require => 'ruby-debug'
 end
+group :development do
+  gem 'ruby-debug19', :require => 'ruby-debug'
+end
 
 group :deployment do
   gem 'thin'

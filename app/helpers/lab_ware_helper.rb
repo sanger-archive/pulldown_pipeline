@@ -16,7 +16,7 @@ module LabWareHelper
   end
 
   cycling_colours(:bait)    { |lab_ware, _|            lab_ware.bait }
-  cycling_colours(:tag)     { |lab_ware, _|            lab_ware.pool }
+  cycling_colours(:tag)     { |lab_ware, _|            lab_ware.pool_id }
   cycling_colours(:pooling) { |lab_ware, destination|  destination }
 
   def aliquot_colour(lab_ware)
@@ -44,10 +44,10 @@ module LabWareHelper
     @admin_link ||= link_to(
       'Admin',
       edit_admin_plate_path(presenter.plate.uuid),
-      :id           => presenter.plate.uuid,
+      :id                => presenter.plate.uuid,
       :'data-transition' => 'pop',
-      :'data-icon'  => 'gear',
-      :rel          => "external"
+      :'data-icon'       => 'gear',
+      :rel               => "external"
     )
   end
 
@@ -80,6 +80,17 @@ module LabWareHelper
   def plates_by_state(plates)
     plates.each_with_object(Hash.new {|h,k| h[k]=[]}) do |plate, plates_by_state|
       plates_by_state[plate.state] << plate
+    end
+  end
+
+  def well_state_value(container)
+    return @fallback_state if @fallback_state.present?
+
+    case container.state
+    when 'failed'  then 'permanent-failure'
+    when 'unknown' then
+      @fallback_state = container.plate.state
+    else container.state
     end
   end
 
