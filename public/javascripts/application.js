@@ -93,7 +93,7 @@
 
     // Fill in the plate barcode with the plate links barcode
     $(document).on('click', ".plate-link", function(event) {
-      $('.plate-barcode').val($(event.currentTarget).attr('id').substr(6));
+      $('.labware-uuid').val($(event.currentTarget).data('uuid'));
       $('.show-my-plates').val(false);
       $('.plate-search-form').submit();
       return false;
