@@ -248,9 +248,9 @@
 
         tagpalette.empty();
 
-        var currentTagGroup   = $(window.tags_by_name[$('#plate_tag_layout_template_uuid option:selected').text()]);
+        var currentTagGroup   = window.tags_by_name[$('#plate_tag_layout_template_uuid option:selected').text()];
         var currentlyUsedTags = $('.aliquot').map(function(){ return parseInt($(this).text(), 10); });
-        var unusedTags        = _.difference(currentTagGroup, currentlyUsedTags);
+        var unusedTags        = _.difference(currentTagGroup, _.sortBy(currentlyUsedTags, function(n){return n;}) );
         var listItems         = unusedTags.reduce(
           function(memo, tagId) { return memo + SCAPE.tagpaletteTemplate({tag_id: tagId}); }, '<li data-role="list-divider" class="ui-li ui-li-divider ui-btn ui-bar-b ui-corner-top ui-btn-up-undefined">Replacement Tags</li>');
 
@@ -328,9 +328,6 @@
       }
 
     });
-
-
-    $('#tagging-plate .aliquot').removeClass('green orange red');
 
     SCAPE.update_layout();
     $('#plate_tag_layout_template_uuid').change(SCAPE.update_layout);
