@@ -1,6 +1,6 @@
 module StateChangers
   class DefaultStateChanger
-    attr_reader :labware_uuid, :labware, :api
+    attr_reader :labware_uuid, :api
     private :api
     attr_reader :user_uuid
 
