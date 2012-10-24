@@ -5,6 +5,8 @@ module Forms
     write_inheritable_attribute :page, 'tagging'
     write_inheritable_attribute :attributes, [:api, :plate_purpose_uuid, :parent_uuid, :tag_layout_template_uuid, :user_uuid, :substitutions]
 
+    write_inheritable_attribute :aliquot_partial, 'plates/tagged_aliquot'
+
     validates_presence_of *(self.attributes - [:substitutions])
 
     def initialize(*args, &block)
