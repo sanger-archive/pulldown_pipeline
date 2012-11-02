@@ -32,6 +32,16 @@ module PlateHelper
     sorted_pool_array = @creation_form.plate.pools.sort_by {|k,v| v['wells'].first }
 
     sorted_pool_array.each{ |(_,pool)| pool['wells'].reject!{|w| failed_wells.include?(w) } }
+
+    # Reorder pools to column major order
+    sorted_pool_array.each do |(_,pool)|
+      reordered_pool = []
+
+      pool['wells'].each_slice(12) do |pool_slice| reordered_pool << pool_slice end
+
+      pool['wells'] = reordered_pool.transpose.flatten
+    end
+
     Hash[sorted_pool_array].to_json.html_safe
   end
 end
