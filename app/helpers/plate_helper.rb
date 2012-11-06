@@ -35,11 +35,7 @@ module PlateHelper
 
     # Reorder pools to column major order
     sorted_pool_array.each do |(_,pool)|
-      reordered_pool = []
-
-      pool['wells'].each_slice(12) do |pool_slice| reordered_pool << pool_slice end
-
-      pool['wells'] = reordered_pool.transpose.flatten
+      pool['wells'] = pool['wells'].sort_by {|w| Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.find_index(w) }
     end
 
     Hash[sorted_pool_array].to_json.html_safe
