@@ -58,6 +58,9 @@ class SearchController < ApplicationController
 
   def check_for_login!
     set_user_by_swipecard!(params[:card_id]) if params[:card_id].present?
+  rescue Sequencescape::Api::ResourceNotFound => exception
+    flash[:error] = exception.message
+    redirect_to :search
   end
   private :check_for_login!
 
