@@ -25,4 +25,19 @@ module PlateHelper
   def fail_wells_presenter_from(form, presenter)
     WellFailingPresenter.new(form, presenter)
   end
+
+  def sorted_sequencing_pool_json
+    failed_wells = @creation_form.plate.wells.select {|w| w.state == 'failed' }.map(&:location)
+
+    sorted_pool_array = @creation_form.plate.pools.sort_by {|k,v| v['wells'].first }
+
+    sorted_pool_array.each{ |(_,pool)| pool['wells'].reject!{|w| failed_wells.include?(w) } }
+
+    # Reorder pools to column major order
+    sorted_pool_array.each do |(_,pool)|
+      pool['wells'] = pool['wells'].sort_by {|w| Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.find_index(w) }
+    end
+
+    Hash[sorted_pool_array].to_json.html_safe
+  end
 end
