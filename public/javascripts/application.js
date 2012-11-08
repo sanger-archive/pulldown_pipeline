@@ -336,7 +336,7 @@
 
 
       update_layout: function () {
-        var tags = $(window.tag_layouts[$('#plate_tag_layout_template_uuid option: selected').text()]);
+        var tags = $(window.tag_layouts[$('#plate_tag_layout_template_uuid option:selected').text()]);
 
         tags.each(function(index) {
           $('#tagging-plate #aliquot_'+this[0]).
