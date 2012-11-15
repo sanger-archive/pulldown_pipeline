@@ -26,10 +26,16 @@ module PlateHelper
     WellFailingPresenter.new(form, presenter)
   end
 
+  def sortable_well_location_for(location)
+    match = location.match(/^([A-Z])(\d+)$/)
+    [match[1],match[2].to_i]
+  end
+  private :sortable_well_location_for
+
   def sorted_sequencing_pool_json
     failed_wells = @creation_form.plate.wells.select {|w| w.state == 'failed' }.map(&:location)
 
-    sorted_pool_array = @creation_form.plate.pools.sort_by {|k,v| v['wells'].first }
+    sorted_pool_array = @creation_form.plate.pools.sort_by {|k,v| sortable_well_location_for(v['wells'].first) }
 
     sorted_pool_array.each{ |(_,pool)| pool['wells'].reject!{|w| failed_wells.include?(w) } }
 
