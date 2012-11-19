@@ -379,20 +379,21 @@
 
 
     SCAPE.preCapPools = function(sequencingPools, masterPlexLevel){
-      var wells, transfers = {};
+      var wells, failures, transfers = {};
 
       for (var pool in sequencingPools) {
-        wells           = SCAPE.plate.sequencingPools[pool].wells;
-        transfers[pool] = SCAPE.preCapPool(wells, masterPlexLevel);
+        wells           = SCAPE.plate.sequencingPools[pool].all_wells;
+        failures        = SCAPE.plate.sequencingPools[pool].failures;
+        transfers[pool] = SCAPE.preCapPool(wells, failures, masterPlexLevel);
       }
       return transfers;
     };
 
-    SCAPE.preCapPool = function(sequencingPool, plexLevel){
+    SCAPE.preCapPool = function(sequencingPool, failed, plexLevel){
       var wells = [];
 
       for (var i =0; i < sequencingPool.length; i = i + plexLevel){
-        wells.push(sequencingPool.slice(i, i + plexLevel));
+        wells.push(sequencingPool.slice(i, i + plexLevel).filter(function(w) { return failed.indexOf(w) == -1; }));
       }
 
       return { plexLevel: plexLevel, wells: wells };
