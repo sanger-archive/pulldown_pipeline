@@ -36,11 +36,14 @@ module PlateHelper
     failed_wells = @creation_form.plate.wells.select {|w| w.state == 'failed' }.map(&:location)
 
     # Reorder pools to column major order & eliminate failed wells from pool
-    sorted_pool_array = @creation_form.plate.pools.sort_by {|k,v| sortable_well_location_for(v['wells'].first) }
-    sorted_pool_array.each do |(_,pool)|
-      pool['failures']  = pool['wells'] & failed_wells
-      pool['all_wells'] = pool['wells'].sort_by(&Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.method(:find_index))
-      pool['wells']     = pool['wells'] - pool['failures']
+    sorted_pool_array = @creation_form.plate.pools.map do |pool_id,pool|
+      [pool_id,pool].tap do
+        pool['failures']  = pool['wells'] & failed_wells
+        pool['all_wells'] = pool['wells'].sort_by(&Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.method(:find_index))
+        pool['wells']     = pool['all_wells'] - pool['failures']
+      end
+    end.sort_by do |(_,pool)|
+      sortable_well_location_for(pool['wells'].first)
     end
 
     Hash[sorted_pool_array].to_json.html_safe
