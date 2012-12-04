@@ -63,6 +63,8 @@ module Forms
     class_inheritable_reader :default_transfer_template_uuid
     write_inheritable_attribute :default_transfer_template_uuid, Settings.transfer_templates['Transfer columns 1-12']
 
+    class_inheritable_reader    :tab_views
+
     attr_reader :plate_creation
 
     def plate_to_walk
