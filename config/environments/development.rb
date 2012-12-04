@@ -29,6 +29,7 @@ PulldownPipeline::Application.configure do
   config.api_connection_options.authorisation = 'development'
 
 
+
   # Email settings...
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = false
