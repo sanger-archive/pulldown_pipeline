@@ -386,6 +386,7 @@
         failures        = SCAPE.plate.sequencingPools[pool].failures;
         transfers[pool] = SCAPE.preCapPool(wells, failures, masterPlexLevel);
       }
+
       return transfers;
     };
 
@@ -454,7 +455,9 @@
 
 
         well.addClass('seqPool-'+(seqPoolIndex+1));
-        well.append(SCAPE.newAliquot(poolNumber, seqPoolID, preCapPool.length));
+
+        if (preCapPool.length)
+          well.append(SCAPE.newAliquot(poolNumber, seqPoolID, preCapPool.length));
       });
     };
 
@@ -462,7 +465,9 @@
     SCAPE.renderSourceWells = function(){
       var preCapPools = SCAPE.plate.preCapPools;
       $('.source-plate .well').empty();
-      $('.source-plate input').detach();
+      $('#well-transfers').detach();
+
+      var newInputs = $(document.createElement('div')).attr('id', 'well-transfers');
 
       walkPreCapPools(preCapPools,function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
         var newInput, well;
@@ -476,9 +481,12 @@
             attr('type', 'hidden').
             val(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber]);
 
-          $('.source-plate').append(newInput);
+          newInputs.append(newInput);
         }
+
       });
+
+      $('.source-plate').append(newInputs);
     };
 
 
