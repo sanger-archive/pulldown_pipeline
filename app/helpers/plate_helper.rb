@@ -26,9 +26,10 @@ module PlateHelper
     WellFailingPresenter.new(form, presenter)
   end
 
+  # Altered to sort by column first then row
   def sortable_well_location_for(location)
     match = location.match(/^([A-Z])(\d+)$/)
-    [match[1],match[2].to_i]
+    [match[2].to_i,match[1]]
   end
   private :sortable_well_location_for
 
