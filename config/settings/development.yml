@@ -1,0 +1,228 @@
+---
+:temp:
+  Order uuid: 4e52bfb0-204d-0130-7f9f-282066132de2 
+:searches:
+  Find pulldown plates: "pulldown/search-all-plates"
+  Find pulldown stock plates: "pulldown/search-stock-plates"
+  Find pulldown plates for user: "for user"
+  Find user by swipecard code: "pulldown/find-user"
+  Find assets by barcode: "pulldown/find-assets-by-barcode" 
+  Find project by name: 27087ece-24d5-11e2-a9f0-003ee1fffe9d
+  Find study by name: 27091f46-24d5-11e2-a9f0-003ee1fffe9d
+  Find sample by name: 2709c2b6-24d5-11e2-a9f0-003ee1fffe9d
+  Find source assets by destination asset barcode: 270b343e-24d5-11e2-a9f0-003ee1fffe9d
+  Find user by login: 271a1440-24d5-11e2-a9f0-003ee1fffe9d
+  #Find user by swipecard code: 271b919e-24d5-11e2-a9f0-003ee1fffe9d
+  #Find pulldown plates: 271d10be-24d5-11e2-a9f0-003ee1fffe9d
+  Find Illumina-B plates: 271e86c4-24d5-11e2-a9f0-003ee1fffe9d
+  Find Illumina-B plates for user: 271ff3d8-24d5-11e2-a9f0-003ee1fffe9d
+  Find Illumina-B stock plates: 27215a20-24d5-11e2-a9f0-003ee1fffe9d
+  Find outstanding Illumina-B pre-PCR plates: 2722cfd6-24d5-11e2-a9f0-003ee1fffe9d
+  Find Illumina-B tubes: 27268bb2-24d5-11e2-a9f0-003ee1fffe9d
+  #Find pulldown plates for user: 272c2252-24d5-11e2-a9f0-003ee1fffe9d
+  #Find pulldown stock plates: 272da10e-24d5-11e2-a9f0-003ee1fffe9d
+:transfer_templates:
+  Transfer columns 1-1: 2a342120-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer columns 1-2: 2a351c60-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer columns 1-3: 2a3618e0-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer columns 1-4: 2a37345a-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer columns 1-6: 2a38863e-24d5-11e2-a9f0-003ee1fffe9d
+  #Transfer columns 1-12: 2a483a3e-24d5-11e2-a9f0-003ee1fffe9d
+  #Transfer columns 1-12: "pulldown/transfer-columns" 
+  Transfer columns 1-12: transfer_templates_1_12
+  #Pool wells based on submission: 2a4940fa-24d5-11e2-a9f0-003ee1fffe9d
+  Pool wells based on submission: pool_transfer 
+  Custom pooling: pool_transfer
+  #Custom pooling: 2a49ded4-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer wells to MX library tubes by submission: 2a4aff30-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer wells to specific tubes by submission: 2a4bc136-24d5-11e2-a9f0-003ee1fffe9d
+  Transfer from tube to tube by submission: 2a4c97be-24d5-11e2-a9f0-003ee1fffe9d
+:purposes:
+  WGS stock DNA:
+    :children:
+      - WGS Covaris
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StockPlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS stock DNA
+  WGS Covaris:
+    :children:
+      - WGS post-Cov
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS Covaris
+  WGS post-Cov:
+    :children:
+      - WGS post-Cov-XP
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::QcCapablePlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS post-Cov
+  WGS post-Cov-XP:
+    :children:
+      - WGS lib
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::QcCapablePlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS post-Cov-XP
+  WGS lib:
+    :children:
+      - WGS lib PCR
+    :form_class: Forms::TransferForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS lib
+  WGS lib PCR:
+    :children:
+      - WGS lib PCR-XP
+    #:form_class: Forms::TaggingForm
+    :form_class: Forms::CreationForm
+    #:presenter_class: Presenters::TaggedPresenter
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS lib PCR
+  WGS lib PCR-XP:
+    :children:
+      - WGS lib pool
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::QcCapablePlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: WGS lib PCR-XP
+  WGS lib pool:
+    :children:
+      - Pulldown QC plate
+    :form_class: Forms::AutoPoolingForm
+    :presenter_class: Presenters::FinalPooledPresenter
+    :state_changer_class: StateChangers::AutoPoolingStateChanger
+    :name: WGS lib pool
+  25e8ca9e-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StockPlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC stock DNA
+  25ea4644-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC Covaris
+  25eb53cc-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC post-Cov
+  25ec63f2-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC post-Cov-XP
+  25ed7bca-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::TransferForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC lib
+  25ee8574-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC lib PCR
+  25ef95e0-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC lib PCR-XP
+  25f09ef4-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::BaitingForm
+    :presenter_class: Presenters::BaitedPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC hyb
+  25f1b082-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC cap lib
+  25f49734-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::TaggingForm
+    :presenter_class: Presenters::TaggedPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC cap lib PCR
+  26032a56-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: SC cap lib PCR-XP
+  2604463e-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::AutoPoolingForm
+    :presenter_class: Presenters::FinalPooledPresenter
+    :state_changer_class: StateChangers::AutoPoolingStateChanger
+    :name: SC cap lib pool
+  2605e76e-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StockPlatePresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC stock DNA
+  26074c1c-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC Covaris
+  260846e4-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC post-Cov
+  260939c8-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC post-Cov-XP
+  260a4804-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::TransferForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC lib
+  260b4cd6-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::TaggingForm
+    :presenter_class: Presenters::TaggedPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC lib PCR
+  260c49e2-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC lib PCR-XP
+  260d3b4a-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CustomPoolingForm
+    :presenter_class: Presenters::CustomPooledPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC lib pool
+  260e314e-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::BaitingForm
+    :presenter_class: Presenters::BaitedPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC hyb
+  260f32b0-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC cap lib
+  26104164-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC cap lib PCR
+  2611406e-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: ISC cap lib PCR-XP
+  26122f9c-24d5-11e2-a9f0-003ee1fffe9d:
+    :form_class: Forms::AutoPoolingForm
+    :presenter_class: Presenters::FinalPooledPresenter
+    :state_changer_class: StateChangers::AutoPoolingStateChanger
+    :name: ISC cap lib pool
+  Pulldown QC plate:
+    :form_class: Forms::CreationForm
+    :presenter_class: Presenters::StandardPresenter
+    :state_changer_class: StateChangers::DefaultStateChanger
+    :name: Pulldown QC plate
