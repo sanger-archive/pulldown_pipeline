@@ -49,7 +49,7 @@ module Presenters::Statemachine
           # Returns the child plate purposes that can be created in the started state.  Typically
           # this should be empty, unless QC plates can be created from the current plate.
           def child_plate_purposes
-            plate.plate_purpose.children.reject { |p| p.name != 'Pulldown QC plate' }
+            []
           end
         end
         state :passed do
@@ -63,7 +63,14 @@ module Presenters::Statemachine
           # Returns the child plate purposes that can be created in the passed state.  Typically
           # this is only one, but it specifically excludes QC plates.
           def child_plate_purposes
-            plate.plate_purpose.children.reject { |p| p.name == 'Pulldown QC plate' }
+            children = Settings.purposes[plate.plate_purpose.uuid].children
+            plate_purposes = []
+            unless children.nil?
+              plate_purposes = children.map do |child|
+                OpenStruct.new(:uuid => child)
+              end
+            end
+            plate_purposes
           end
         end
         state :failed do
