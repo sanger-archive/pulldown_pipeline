@@ -27,6 +27,7 @@ PulldownPipeline::Application.configure do
   config.api_connection_options.namespace     = 'Pulldown'
   config.api_connection_options.url           = 'http://localhost:3000/api/1/'
   config.api_connection_options.authorisation = 'development'
+  config.api_connection_options.read_timeout = 500
 
 
 
