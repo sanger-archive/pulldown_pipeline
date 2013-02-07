@@ -1,3 +1,5 @@
+var global_grabber
+
 (function(window, $, undefined){
   "use strict";
 
@@ -378,13 +380,14 @@
 
 
 
-    SCAPE.preCapPools = function(sequencingPools, masterPlexLevel){
-      var wells, failures, transfers = {};
+    SCAPE.preCapPools = function(preCapGroups, masterPlexLevel){
+      var wells, failures, transfers = {}, plexLevel;
 
-      for (var pool in sequencingPools) {
-        wells           = SCAPE.plate.sequencingPools[pool].all_wells;
-        failures        = SCAPE.plate.sequencingPools[pool].failures;
-        transfers[pool] = SCAPE.preCapPool(wells, failures, masterPlexLevel);
+      for (var group in preCapGroups) {
+        wells           = SCAPE.plate.preCapGroups[group].all_wells;
+        //failures        = SCAPE.plate.preCapGroups[group].failures;
+        plexLevel       = SCAPE.plate.preCapGroups[group].pre_capture_plex_level
+        transfers[group] = SCAPE.preCapPool(wells, failures, plexLevel);
       }
 
       return transfers;
@@ -392,9 +395,8 @@
 
     SCAPE.preCapPool = function(sequencingPool, failed, plexLevel){
       var wells = [];
-
       for (var i =0; i < sequencingPool.length; i = i + plexLevel){
-        wells.push(sequencingPool.slice(i, i + plexLevel).filter(function(w) { return failed.indexOf(w) == -1; }));
+        wells.push(sequencingPool.slice(i, i + plexLevel));//.filter(function(w) { return failed.indexOf(w) == -1; }));
       }
 
       return { plexLevel: plexLevel, wells: wells };
@@ -493,7 +495,17 @@
     var masterPlexHandler = function(event){
       // Forms return strings! Always a fun thing to forget...
       var plexLevel   = parseInt($(event.currentTarget).val(), 10);
-      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.sequencingPools, plexLevel );
+      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, plexLevel );
+
+      SCAPE.renderSourceWells();
+      SCAPE.renderDestinationPools();
+
+      $('.aliquot').fadeIn('slow');
+    };
+
+    var plateSummaryHandler = function(){
+      // Calculate the pools and render the plate
+      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, null );
 
       SCAPE.renderSourceWells();
       SCAPE.renderDestinationPools();
@@ -528,85 +540,86 @@
 
 
     SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {
-      'masterSettings': {
-        enter: function(_, delegateTarget){
-          $('#master-plex-level').
-            textinput('enable').
-            slider('enable');
+      // 'masterSettings': {
+      //   enter: function(_, delegateTarget){
+      //     $('#master-plex-level').
+      //       textinput('enable').
+      //       slider('enable');
 
-          delegateTarget.on('change', '#master-plex-level', masterPlexHandler);
-        },
+      //     delegateTarget.on('change', '#master-plex-level', masterPlexHandler);
+      //   },
 
-        leave: function(){
-          $('#master-plex-level').
-            textinput('disable').
-            slider('disable');
-        }
+      //   leave: function(){
+      //     $('#master-plex-level').
+      //       textinput('disable').
+      //       slider('disable');
+      //   }
 
-      },
+      // },
 
-      'editPool': {
-        enter: function(_, delegateTarget){
-          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
+      // 'editPool': {
+      //   enter: function(_, delegateTarget){
+      //     delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
-          $('.destination-plate').css('opacity',0.3);
-          $('.source-plate .aliquot').addClass('big-aliquot');
-        },
+      //     $('.destination-plate').css('opacity',0.3);
+      //     $('.source-plate .aliquot').addClass('big-aliquot');
+      //   },
 
-        leave: function(){
-          $('.destination-plate').css('opacity',1);
+      //   leave: function(){
+      //     $('.destination-plate').css('opacity',1);
 
-          $('.aliquot').
-            removeClass('selected-aliquot big-aliquot');
-        }
-      },
+      //     $('.aliquot').
+      //       removeClass('selected-aliquot big-aliquot');
+      //   }
+      // },
 
-      'editPoolSelected': {
-        enter: function(_, delegateTarget){
+      // 'editPoolSelected': {
+      //   enter: function(_, delegateTarget){
 
-          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
+      //     delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
-          // We need to grab events on the slider for grab and release...
-          var slider = $('#per-pool-plex-level').
-            val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
-            textinput('enable').
-            slider('enable').
-            siblings('.ui-slider');
+      //     // We need to grab events on the slider for grab and release...
+      //     var slider = $('#per-pool-plex-level').
+      //       val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
+      //       textinput('enable').
+      //       slider('enable').
+      //       siblings('.ui-slider');
 
-          delegateTarget.on('change', '#per-pool-plex-level', function(event){
-            var plexLevel = parseInt($(event.currentTarget).val(), 10);
+      //     delegateTarget.on('change', '#per-pool-plex-level', function(event){
+      //       var plexLevel = parseInt($(event.currentTarget).val(), 10);
 
-            SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
-              SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
+      //       SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
+      //         SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
 
-            SCAPE.renderSourceWells();
-            SCAPE.renderDestinationPools();
+      //       SCAPE.renderSourceWells();
+      //       SCAPE.renderDestinationPools();
 
-            highlightCurrentPool();
-            $('.aliquot').fadeIn('slow');
-          });
+      //       highlightCurrentPool();
+      //       $('.aliquot').fadeIn('slow');
+      //     });
 
 
-          highlightCurrentPool();
-        },
+      //     highlightCurrentPool();
+      //   },
 
-        leave: function(){
-          $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
-          $('#per-pool-plex-level').textinput('disable').slider('disable').val('');
-          SCAPE.plate.currentPool = undefined;
-        }
-      },
+      //   leave: function(){
+      //     $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
+      //     $('#per-pool-plex-level').textinput('disable').slider('disable').val('');
+      //     SCAPE.plate.currentPool = undefined;
+      //   }
+      // },
 
-      'movePools': {
-        enter: function(){
-        },
+      // 'movePools': {
+      //   enter: function(){
+      //   },
 
-        leave: function(){
-        }
-      },
+      //   leave: function(){
+      //   }
+      // },
 
       'poolingSummary': {
         enter: function(){
+          plateSummaryHandler();
           renderPoolingSummary(SCAPE.plate.preCapPools);
           $('.create-button').button('enable');
         },
@@ -619,11 +632,11 @@
     });
 
     SCAPE.linkCallbacks.add(SCAPE.poolingSM.transitionLink);
-    SCAPE.poolingSM.transitionTo('masterSettings');
-    $('#master-plex-level').change();
+    SCAPE.poolingSM.transitionTo('poolingSummary');
+    //$('#master-plex-level').change();
 
 
-    $('.create-button').button('disable');
+    $('.create-button').button('enable');
   });
 
 

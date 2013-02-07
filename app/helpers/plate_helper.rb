@@ -49,4 +49,17 @@ module PlateHelper
 
     Hash[sorted_pool_array].to_json.html_safe
   end
+
+  def sorted_pre_cap_group_json
+    sorted_group_array = @creation_form.plate.pre_cap_groups.map do |group_id,group|
+      [group_id,group].tap do
+        group['all_wells'] = group['wells'].sort_by(&Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.method(:find_index))
+      end
+    end.sort_by do |(_,group)|
+      sortable_well_location_for(group['wells'].first)
+    end
+
+    Hash[sorted_group_array].to_json.html_safe
+  end
+
 end
