@@ -385,7 +385,7 @@ var global_grabber
 
       for (var group in preCapGroups) {
         wells           = SCAPE.plate.preCapGroups[group].all_wells;
-        //failures        = SCAPE.plate.preCapGroups[group].failures;
+        failures        = SCAPE.plate.preCapGroups[group].failures;
         plexLevel       = SCAPE.plate.preCapGroups[group].pre_capture_plex_level
         transfers[group] = SCAPE.preCapPool(wells, failures, plexLevel);
       }
@@ -396,7 +396,7 @@ var global_grabber
     SCAPE.preCapPool = function(sequencingPool, failed, plexLevel){
       var wells = [];
       for (var i =0; i < sequencingPool.length; i = i + plexLevel){
-        wells.push(sequencingPool.slice(i, i + plexLevel));//.filter(function(w) { return failed.indexOf(w) == -1; }));
+        wells.push(sequencingPool.slice(i, i + plexLevel).filter(function(w) { return failed.indexOf(w) == -1; }));
       }
 
       return { plexLevel: plexLevel, wells: wells };
@@ -492,16 +492,16 @@ var global_grabber
     };
 
 
-    var masterPlexHandler = function(event){
-      // Forms return strings! Always a fun thing to forget...
-      var plexLevel   = parseInt($(event.currentTarget).val(), 10);
-      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, plexLevel );
+    // var masterPlexHandler = function(event){
+    //   // Forms return strings! Always a fun thing to forget...
+    //   var plexLevel   = parseInt($(event.currentTarget).val(), 10);
+    //   SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, plexLevel );
 
-      SCAPE.renderSourceWells();
-      SCAPE.renderDestinationPools();
+    //   SCAPE.renderSourceWells();
+    //   SCAPE.renderDestinationPools();
 
-      $('.aliquot').fadeIn('slow');
-    };
+    //   $('.aliquot').fadeIn('slow');
+    // };
 
     var plateSummaryHandler = function(){
       // Calculate the pools and render the plate
