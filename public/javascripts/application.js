@@ -491,21 +491,7 @@ var global_grabber
       $('.source-plate').append(newInputs);
     };
 
-
-    // var masterPlexHandler = function(event){
-    //   // Forms return strings! Always a fun thing to forget...
-    //   var plexLevel   = parseInt($(event.currentTarget).val(), 10);
-    //   SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, plexLevel );
-
-    //   SCAPE.renderSourceWells();
-    //   SCAPE.renderDestinationPools();
-
-    //   $('.aliquot').fadeIn('slow');
-    // };
-
     var plateSummaryHandler = function(){
-      // Calculate the pools and render the plate
-      SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, null );
 
       SCAPE.renderSourceWells();
       SCAPE.renderDestinationPools();
@@ -515,15 +501,15 @@ var global_grabber
 
     var selectSeqPoolHandler = function(event){
       SCAPE.plate.currentPool = poolIdFromLocation(
-        SCAPE.plate.sequencingPools,
+        SCAPE.plate.preCapGroups,
         $(event.currentTarget).closest('.well').data('location'));
 
         SCAPE.poolingSM.transitionTo('editPoolSelected');
     };
 
-    var poolIdFromLocation = function(sequencingPools, location){
+    var poolIdFromLocation = function(preCapGroups, location){
       return _.detect(
-        sequencingPools,
+        preCapGroups,
         function(pool){ return _.contains(pool.wells, location); }
       ).id;
     };
@@ -540,81 +526,61 @@ var global_grabber
 
 
     SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {
-      // 'masterSettings': {
-      //   enter: function(_, delegateTarget){
-      //     $('#master-plex-level').
-      //       textinput('enable').
-      //       slider('enable');
 
-      //     delegateTarget.on('change', '#master-plex-level', masterPlexHandler);
-      //   },
+      'editPool': {
+        enter: function(_, delegateTarget){
+          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
-      //   leave: function(){
-      //     $('#master-plex-level').
-      //       textinput('disable').
-      //       slider('disable');
-      //   }
+          $('.destination-plate').css('opacity',0.3);
+          $('.source-plate .aliquot').addClass('big-aliquot');
+        },
 
-      // },
+        leave: function(){
+          $('.destination-plate').css('opacity',1);
 
-      // 'editPool': {
-      //   enter: function(_, delegateTarget){
-      //     delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
+          $('.aliquot').
+            removeClass('selected-aliquot big-aliquot');
+        }
+      },
 
-      //     $('.destination-plate').css('opacity',0.3);
-      //     $('.source-plate .aliquot').addClass('big-aliquot');
-      //   },
+      'editPoolSelected': {
+        enter: function(_, delegateTarget){
 
-      //   leave: function(){
-      //     $('.destination-plate').css('opacity',1);
+          delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
 
-      //     $('.aliquot').
-      //       removeClass('selected-aliquot big-aliquot');
-      //   }
-      // },
+          // We need to grab events on the slider for grab and release...
+          var slider = $('#per-pool-plex-level').
+            val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
+            textinput('enable').
+            slider('enable').
+            siblings('.ui-slider');
 
-      // 'editPoolSelected': {
-      //   enter: function(_, delegateTarget){
+          delegateTarget.on('change', '#per-pool-plex-level', function(event){
+            var plexLevel = parseInt($(event.currentTarget).val(), 10);
 
-      //     delegateTarget.on('click', '.source-plate .aliquot', selectSeqPoolHandler);
+            SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
+              SCAPE.preCapPool(SCAPE.plate.preCapGroups[SCAPE.plate.currentPool].all_wells, SCAPE.plate.preCapGroups[SCAPE.plate.currentPool].failures, plexLevel );
 
-      //     // We need to grab events on the slider for grab and release...
-      //     var slider = $('#per-pool-plex-level').
-      //       val(SCAPE.plate.preCapPools[SCAPE.plate.currentPool].plexLevel).
-      //       textinput('enable').
-      //       slider('enable').
-      //       siblings('.ui-slider');
+            SCAPE.renderSourceWells();
+            SCAPE.renderDestinationPools();
 
-      //     delegateTarget.on('change', '#per-pool-plex-level', function(event){
-      //       var plexLevel = parseInt($(event.currentTarget).val(), 10);
-
-      //       SCAPE.plate.preCapPools[SCAPE.plate.currentPool] =
-      //         SCAPE.preCapPool(SCAPE.plate.sequencingPools[SCAPE.plate.currentPool].wells, plexLevel );
-
-      //       SCAPE.renderSourceWells();
-      //       SCAPE.renderDestinationPools();
-
-      //       highlightCurrentPool();
-      //       $('.aliquot').fadeIn('slow');
-      //     });
+            highlightCurrentPool();
+            $('.aliquot').fadeIn('slow');
+          });
 
 
-      //     highlightCurrentPool();
-      //   },
+          highlightCurrentPool();
+        },
 
-      //   leave: function(){
-      //     $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
-      //     $('#per-pool-plex-level').textinput('disable').slider('disable').val('');
-      //     SCAPE.plate.currentPool = undefined;
-      //   }
-      // },
+        leave: function(){
+          $('.aliquot').css('opacity', 1).removeClass('selected-aliquot');
+          $('#per-pool-plex-level').textinput('disable').slider('disable').val('');
+          SCAPE.plate.currentPool = undefined;
+        }
+      },
 
-      // 'movePools': {
-      //   enter: function(){
-      //   },
-
-      //   leave: function(){
-      //   }
+      // 'plateSelector' :{
+      // // This tab will be for cross plate pooling
       // },
 
       'poolingSummary': {
@@ -632,9 +598,9 @@ var global_grabber
     });
 
     SCAPE.linkCallbacks.add(SCAPE.poolingSM.transitionLink);
+    // Calculate the pools and render the plate
+    SCAPE.plate.preCapPools = SCAPE.preCapPools( SCAPE.plate.preCapGroups, null );
     SCAPE.poolingSM.transitionTo('poolingSummary');
-    //$('#master-plex-level').change();
-
 
     $('.create-button').button('enable');
   });
