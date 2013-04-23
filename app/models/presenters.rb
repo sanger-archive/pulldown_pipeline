@@ -4,6 +4,9 @@ module Presenters
       base.class_eval do
         include Forms::Form
         write_inheritable_attribute :page, 'show'
+
+        class_inheritable_reader :csv
+        write_inheritable_attribute :csv, 'show'
       end
     end
 
@@ -39,10 +42,11 @@ module Presenters
 
     class_inheritable_reader    :tab_states
     write_inheritable_attribute :tab_states, {
-      :pending    =>  ['summary-button'],
-      :started    =>  ['summary-button'],
-      :passed     =>  ['summary-button'],
-      :cancelled  =>  ['summary-button']
+      :pending      =>  ['summary-button'],
+      :started      =>  ['summary-button'],
+      :passed       =>  ['summary-button'],
+      :cancelled    =>  ['summary-button'],
+      :qc_complete  =>  ['summary-button']
     }
 
     class_inheritable_reader    :authenticated_tab_states

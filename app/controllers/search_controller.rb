@@ -8,14 +8,14 @@ class SearchController < ApplicationController
   def ongoing_plates
     @search_results = ongoing_plate_search.all(
       Pulldown::Plate,
-      :state => [ 'pending', 'started', 'passed' ]
+      :state => [ 'pending', 'started', 'passed', 'qc_complete' ]
     )
   end
 
   def stock_plates
     @search_results = stock_plate_search.all(
       Pulldown::Plate,
-      :state => [ 'pending', 'passed' ]
+      :state => [ 'pending', 'passed', 'qc_complete' ]
     )
   end
 
@@ -35,12 +35,11 @@ class SearchController < ApplicationController
 
   # TODO get rid of this exception spaghetti and introduce a search presenter with validation!
   def create
-
     labware_uuid = params[:labware_uuid] || find_plate(params[:plate_barcode]).uuid
     raise "You have not supplied a labware barcode" if labware_uuid.nil?
-
     respond_to do |format|
       format.html { redirect_to pulldown_plate_path(labware_uuid) }
+      format.json { redirect_to pulldown_plate_path(labware_uuid) }
     end
 
   rescue => exception
@@ -50,10 +49,11 @@ class SearchController < ApplicationController
     # rendering new without re-searching for the ongoing plates...
     respond_to do |format|
       format.html { render :new }
+      format.json { render :json => {'general' => exception.message}, :status=>500 }
     end
   end
 
-  def clear_current_user!;  session[:user_uuid] = nil; end
+  def clear_current_user!;  session[:user_uuid] = nil unless request.accepts.include?('application/json'); end
   private :clear_current_user!
 
   def check_for_login!
