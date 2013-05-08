@@ -8,7 +8,7 @@ class SearchController < ApplicationController
   def ongoing_plates
     @search_results = ongoing_plate_search.all(
       Pulldown::Plate,
-      :state => [ 'pending', 'started', 'passed', 'qc_complete' ]
+      :state => [ 'pending', 'started', 'passed', 'qc_complete', 'nx_in_progress']
     )
   end
 
@@ -22,7 +22,7 @@ class SearchController < ApplicationController
   def my_plates
     @search_results = my_plates_search.all(
       Pulldown::Plate,
-     :state     => [ 'pending', 'started', 'passed', 'started_fx', 'started_mj', 'qc_complete' ],
+     :state     => [ 'pending', 'started', 'passed', 'started_fx', 'started_mj', 'qc_complete', 'nx_in_progress' ],
      :user_uuid => current_user_uuid
     )
 

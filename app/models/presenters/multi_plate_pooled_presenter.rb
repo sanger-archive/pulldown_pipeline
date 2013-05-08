@@ -4,21 +4,24 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
 
   write_inheritable_attribute :csv, 'show_pooled'
 
-  state_machine :pooled_state, :initial => :pending, :namespace => 'pooled' do
+  state_machine :state, :initial => :pending do
     Presenters::Statemachine::StateTransitions.inject(self)
 
     state :pending do
-
+      include StateDoesNotAllowChildCreation
     end
     state :started do
+      include StateDoesNotAllowChildCreation
+    end
 
+    state :nx_in_progress do
+      include StateDoesNotAllowChildCreation
     end
-    state :passed do
-      def control_source_view(&block)
-        yield
-        nil
-      end
+
+    event :pass do
+      transition [ :nx_in_progress ] => :passed
     end
+
     state :failed do
 
     end
@@ -27,17 +30,41 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
     end
   end
 
+  write_inheritable_attribute :authenticated_tab_states, {
+    :pending        =>  [ 'summary-button', 'robot-verification-button' ],
+    :started        =>  [ 'summary-button', 'robot-verification-button' ],
+    :nx_in_progress =>  [ 'summary-button', 'plate-state-button' ],
+    :passed         =>  [ 'plate-creation-button','summary-button', 'well-failing-button', 'plate-state-button' ],
+    :cancelled      =>  [ 'summary-button' ],
+    :failed         =>  [ 'summary-button' ]
+  }
+
+  write_inheritable_attribute :robot_name, 'nx8'
+
   def transfers
     self.plate.creation_transfers.map do |ct|
-      ct.transfers.sort {|a,b| split_location(a.first) <=> split_location(b.first) }
+      source_ean = ct.source.barcode.ean13
+      source_barcode = "#{ct.source.barcode.prefix}#{ct.source.barcode.number}"
+      source_stock = "#{ct.source.stock_plate.barcode.prefix}#{ct.source.stock_plate.barcode.number}"
+      destination_ean = ct.destination.barcode.ean13
+      destination_barcode = "#{ct.destination.barcode.prefix}#{ct.destination.barcode.number}"
+      transfers = ct.transfers.reverse_merge(all_wells).sort {|a,b| split_location(a.first) <=> split_location(b.first) }
+      {
+        :source_ean          => source_ean,
+        :source_barcode      => source_barcode,
+        :source_stock        => source_stock,
+        :destination_ean     => destination_ean,
+        :destination_barcode => destination_barcode,
+        :transfers           => transfers
+      }
     end
   end
 
-  def pooled_state
-    plate.state
+  def all_wells
+    return @all_wells unless @all_wells.nil?
+    @all_wells = {}
+    ('A'..'H').each {|r| (1..12).each{|c| @all_wells["#{r}#{c}"]="H12"}}
+    @all_wells
   end
 
-  def pooled_state=(state)
-    # Ignore this
-  end
 end

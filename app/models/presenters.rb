@@ -48,7 +48,8 @@ module Presenters
       :started      =>  ['summary-button'],
       :passed       =>  ['summary-button'],
       :cancelled    =>  ['summary-button'],
-      :qc_complete  =>  ['summary-button']
+      :qc_complete  =>  ['summary-button'],
+      :nx_in_progress => ['summary-button']
     }
 
     class_inheritable_reader    :authenticated_tab_states
