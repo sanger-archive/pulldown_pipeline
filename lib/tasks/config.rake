@@ -1,5 +1,8 @@
 namespace :config do
   desc 'Generates a configuration file for the current Rails environment'
+
+  require "#{Rails.root}/config/robots.rb"
+
   task :generate => :environment do
     api = Sequencescape::Api.new(PulldownPipeline::Application.config.api_connection_options)
 
@@ -70,12 +73,18 @@ namespace :config do
 
       puts "Preparing plate purpose forms, presenters, and state changers ..."
 
+      configuration[:purpose_uuids] = {}
+
       api.plate_purpose.all.each do |plate_purpose|
         next unless plate_purpose.name == 'Pulldown QC plate' or plate_purpose.name =~ /^(WGS|SC|ISC|ISC-HTP)\s/ or plate_purpose.name == 'Lib PCR-XP' # Ignore unnecessary plates
         plate_purposes[plate_purpose.uuid] = name_to_details[plate_purpose.name].dup.merge(
           :name => plate_purpose.name
         )
+        configuration[:purpose_uuids][plate_purpose.name] = plate_purpose.uuid
       end
+
+      configuration[:robots] = ROBOT_CONFIG
+
     end
 
     # Write out the current environment configuration file

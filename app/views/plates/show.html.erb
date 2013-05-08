@@ -18,6 +18,7 @@
           <li id="plate-QC-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-QC-button" data-icon="add">Create QC Plate</a></li>
           <li id="plate-state-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-state-button" data-icon="gear">Change Plate State</a></li>
           <li id="well-failing-button"><a data-theme="a" href="#" class="navbar-link" rel="well-failing-button" data-icon="delete">Fail Wells</a></li>
+          <li id="robot-verification-button"><a data-theme="a" href="<%= @presenter.robot_name.present? ? robot_path(@presenter.robot_name) : '#' %>" class="navbar-link" rel="robot-verification-button" data-icon="gear">Bed Verification</a></li>
         <% end -%>
       </ul>
     </div>

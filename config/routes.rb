@@ -6,6 +6,12 @@ PulldownPipeline::Application.routes.draw do
     match '/all_stock_plates', :action => :stock_plates
   end
 
+  # Robots help us batch work up by function, rather than plate
+  resources :robots, :controller => :robots do
+    post 'start', :on => :member
+    post 'verify', :on => :member
+  end
+
   resources :pulldown_plates, :controller => :plates do
     resources :children, :controller => :plate_creation
     resources :tubes,    :controller => :tube_creation

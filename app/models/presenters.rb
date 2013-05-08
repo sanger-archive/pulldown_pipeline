@@ -7,6 +7,8 @@ module Presenters
 
         class_inheritable_reader :csv
         write_inheritable_attribute :csv, 'show'
+
+        class_inheritable_reader :robot_name
       end
     end
 

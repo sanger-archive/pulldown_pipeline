@@ -3,4 +3,6 @@
 <% end %>
 <%= link_to('Back to Inbox', root_path, :'data-direction' => "reverse",  :'data-icon' => 'search') %>
 <%= yield(:header) %>
-<%= admin_link(presenter) %>
+<% if presenter.present? %>
+  <%= admin_link(presenter) %>
+<% end %>
