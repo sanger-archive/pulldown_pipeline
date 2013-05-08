@@ -3,10 +3,10 @@
     <h1>Pre-Cap pooling</h1>
     <div data-role="navbar" data-iconpos="right">
       <ul>
-        <li><a href="#" data-theme="a" class="navbar-link ui-btn-active" rel="master-settings">Master Plex Level</a></li>
+<!--    <li><a href="#" data-theme="a" class="navbar-link ui-btn-active" rel="master-settings">Master Plex Level</a></li>-->
         <li><a href="#" data-theme="a" class="navbar-link" rel="edit-pool" >Edit Pre-cap pool</a></li>
-        <!-- <li><a href="#" data-theme="a" class="navbar-link" rel="move-pools" >Move Pools</a></li> -->
-        <li><a href="#" data-theme="a" data-icon="add" class="navbar-link" rel="pooling-summary" >Pooling Summary</a></li>
+<!--         <li><a href="#" data-theme="a" class="navbar-link" rel="move-pools" >Move Pools</a></li> -->
+        <li><a href="#" data-theme="a" data-icon="add" class="navbar-link ui-btn-active" rel="pooling-summary" >Pooling Summary</a></li>
       </ul>
     </div>
   </div>
@@ -26,7 +26,7 @@
     <div class="ui-grid-a">
       <div id="source-block" class="ui-block-a">
 
-        <div id="start-instructions-block" class="scape-ui-block">
+<!--         <div id="start-instructions-block" class="scape-ui-block">
           <div class="instructions ui-blody">
             <h3>Plate wide plex level</h3>
             <p>The master plex level can be used as a starting point for the ISC lib pool plate's layout.</p>
@@ -39,7 +39,7 @@
             <p><i>NB. Final pipeline pooling will be as per the original submission.</i></p>
           </div>
 
-        </div>
+        </div> -->
 
         <div id="edit-pool-instruction-block" class="scape-ui-block" style="display:none;">
           <div class="instructions ui-blody">
@@ -55,7 +55,7 @@
           </div>
         </div>
 
-        <div id="create-plate-block" class="scape-ui-block" style="display:none;">
+        <div id="create-plate-block" class="scape-ui-block" >
           <div class="instructions ui-blody">
             <h1>Layout Summary</h1>
           </div>
@@ -80,14 +80,14 @@
 
     <div class="ui-grid-a">
       <div class="ui-block-a">
-        <div id="master-plex-level-block" class="scape-ui-block">
+<!--         <div id="master-plex-level-block" class="scape-ui-block">
           <h2>Source Plate</h2>
           <div data-role="fieldcontain">
             <label for="master-plex-level">Plate Master Plex level:</label>
             <input type="range" name="master-plex-level" id="master-plex-level" data-highlight="true" value="8" min="1" max="96" />
           </div>
 
-        </div>
+        </div> -->
 
         <div id="edit-pool-block" class="scape-ui-block" style="display:none;">
           <div data-role="fieldcontain">
@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div id="pooling-summary-block" class="scape-ui-block" style="display:none;">
+        <div id="pooling-summary-block" class="scape-ui-block">
           <ul id="pooling-summary" data-role="listview" data-inset="true"></ul>
         </div>
 
@@ -131,7 +131,8 @@
       coloursByLocation: <%= colours_by_location.to_json.html_safe %>,
       plate: {
         tabViews: <%= @creation_form.tab_views.to_json.html_safe %>,
-        sequencingPools: <%= sorted_sequencing_pool_json %>
+        sequencingPools: <%= sorted_sequencing_pool_json %>,
+        preCapGroups: <%= sorted_pre_cap_group_json %>
       }
     });
 
