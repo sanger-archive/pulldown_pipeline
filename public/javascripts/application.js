@@ -622,12 +622,22 @@ $.ajaxSetup({
           data: 'plate_barcode='+plate.value,
           success: function(data,status) { plate.checkPlate(data,status); }
         }).fail(function(data,status) { if (status!=='abort') { plate.badPlate(); } });
+      },
+      checkPlates : function() {
+        if ($('.wait-plate, .bad-plate').size() === 0) {
+          $('#summary_tab').removeClass('ui-disabled');
+        } else {
+          $('#summary_tab').addClass('ui-disabled');
+        }
       }
     })
 
     $('.plate-box').on('change', function() {
       // When we scan in a plate
-      if (this.value === "") { this.scanPlate(); } else { this.waitPlate(); SCAPE.retrievePlate(this); };
+      if (this.value === "") {
+        this.scanPlate();
+      } else {
+        this.waitPlate(); $('#summary_tab').addClass('ui-disabled'); SCAPE.retrievePlate(this); };
     });
 
     $('.plate-box').each(function(){
@@ -640,20 +650,24 @@ $.ajaxSetup({
           this.clearPlate();
           $(this).closest('.plate-container').removeClass('good-plate bad-plate scan-plate');
           $(this).closest('.plate-container').addClass('wait-plate');
+          $('#summary_tab').addClass('ui-disabled');
         },
         scanPlate : function() {
           this.clearPlate();
           $(this).closest('.plate-container').removeClass('good-plate wait-plate bad-plate');
           $(this).closest('.plate-container').addClass('scan-plate');
+          SCAPE.checkPlates();
         },
         badPlate : function() {
           this.clearPlate();
           $(this).closest('.plate-container').removeClass('good-plate wait-plate scan-plate');
           $(this).closest('.plate-container').addClass('bad-plate');
+          $('#summary_tab').addClass('ui-disabled');
         },
         goodPlate : function() {
           $(this).closest('.plate-container').removeClass('bad-plate wait-plate scan-plate');
           $(this).closest('.plate-container').addClass('good-plate');
+          SCAPE.checkPlates();
         },
         checkPlate : function(data,status) {
           if (data.plate.state===SCAPE.sourceState && data.plate.purpose==SCAPE.sourcePurpose) {
@@ -664,17 +678,29 @@ $.ajaxSetup({
           }
         },
         clearPlate : function() {
-          SCAPE.plates[$(this).data('position]')] = undefined;
+          SCAPE.plates[$(this).data('position')] = undefined;
         }
       })
 
     })
+
+    SCAPE.totalPools = function() {
+      var poolCount = 0;
+      for (var plateIndex = 0; plateIndex < SCAPE.plates.length; plateIndex += 1) {
+        if (SCAPE.plates[plateIndex]!==undefined) {
+          var preCapPools = SCAPE.plates[plateIndex].preCapPools;
+          poolCount += walkPreCapPools(preCapPools, function(){});
+        }
+      }
+      return poolCount;
+    }
 
     SCAPE.calculatePreCapPools = function() {
       for (var plateIndex in SCAPE.plates){
             var plate = SCAPE.plates[plateIndex];
             if (plate!==undefined) { SCAPE.plates[plateIndex].preCapPools = SCAPE.preCapPools( SCAPE.plates[plateIndex] )}
           }
+      return SCAPE.totalPools() <= 96
     };
 
     SCAPE.preCapPools = function(plate){
@@ -828,11 +854,18 @@ $.ajaxSetup({
 
       'poolingSummary': {
         enter: function(){
-          SCAPE.calculatePreCapPools();
-          plateSummaryHandler();
-          $('#pooling-summary').empty();
-          renderPoolingSummary(SCAPE.plates);
-          $('.create-button').button('enable');
+          if (SCAPE.calculatePreCapPools()) {
+            plateSummaryHandler();
+            $('#pooling-summary').empty();
+            renderPoolingSummary(SCAPE.plates);
+            $('.create-button').button('enable');
+            SCAPE.message('Check pooling and create plate','valid');
+          } else {
+            // Pooling Went wrong
+            $('#pooling-summary').empty();
+            $('.create-button').button('disable');
+            SCAPE.message('Too many pools for the target plate.','invalid');
+          }
         },
 
         leave: function(){
@@ -914,7 +947,7 @@ $.ajaxSetup({
       $.each(beds, function(bed_id) {
         if (!this) {$('#whole\\['+bed_id+'\\]').addClass('bad_bed'); bad_beds.push(bed_id);}
       });
-      message('Problem with bed(s): '+bad_beds.join(', '),'invalid');
+      SCAPE.message('Problem with bed(s): '+bad_beds.join(', '),'invalid');
     }
 
     var message = function(message,status) {
@@ -932,7 +965,7 @@ $.ajaxSetup({
 
     var pass = function() {
       $.mobile.hidePageLoadingMsg();
-      message('No problems detected!','valid');
+      SCAPE.message('No problems detected!','valid');
       $('#start-robot').button('enable');
     }
 
@@ -960,10 +993,24 @@ $.ajaxSetup({
           type: 'POST',
           data: {"beds" : SCAPE.robot_beds },
           success: function(data,status) { checkResponse(data); }
-        }).fail(function(data,status) { message('The beds could not be validated. There may be network issues, or problems with Sequencescape.','invalid'); fail(); });
+        }).fail(function(data,status) { SCAPE.message('The beds could not be validated. There may be network issues, or problems with Sequencescape.','invalid'); fail(); });
     })
   });
 
 
 })(window, jQuery);
+
+(function($, exports, undefined){
+  "use strict";
+
+   SCAPE.message = function(message,status) {
+      $('#validation_report').empty().append(
+        $(document.createElement('div')).
+          addClass('report').
+          addClass(status).
+          text(message)
+        );
+    }
+
+})(jQuery,window);
 

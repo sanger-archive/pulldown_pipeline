@@ -5,7 +5,7 @@
       <ul>
         <li><a href="#" data-theme="a" class="navbar-link ui-btn-active" rel="add-plates">Add plates</a></li>
 <!--         <li><a href="#" data-theme="a" class="navbar-link" rel="edit-pool" >Edit Pre-cap pool</a></li> -->
-        <li  disabled="ture"><a href="#" data-theme="a" data-icon="add" class="navbar-link" rel="pooling-summary" disabled="true">Pooling Summary</a></li>
+        <li id="summary_tab" class="ui-disabled"><a href="#" data-theme="a" data-icon="add" class="navbar-link" rel="pooling-summary">Pooling Summary</a></li>
       </ul>
     </div>
   </div>
@@ -56,7 +56,7 @@
           </div>
 
           <br/>
-
+          <div id="validation_report"></div>
           <%= form.submit 'Make Pre-Cap pool Plate',
             :class        => 'create-button',
             :'data-theme' => 'b',
