@@ -394,6 +394,7 @@ var global_grabber
     };
 
     SCAPE.preCapPool = function(sequencingPool, failed, plexLevel){
+      plexLevel = plexLevel || 8; // To stop an infinite loop if null or 0 slips through
       var wells = [];
       for (var i =0; i < sequencingPool.length; i = i + plexLevel){
         wells.push(sequencingPool.slice(i, i + plexLevel).filter(function(w) { return failed.indexOf(w) == -1; }));
