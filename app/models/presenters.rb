@@ -8,6 +8,9 @@ module Presenters
         class_inheritable_reader :csv
         write_inheritable_attribute :csv, 'show'
 
+        class_inheritable_reader :has_qc_data?
+        write_inheritable_attribute :has_qc_data?, false
+
         class_inheritable_reader :robot_name
       end
     end
@@ -71,6 +74,10 @@ module Presenters
 
     def purpose
       @purpose ||= lab_ware.plate_purpose
+    end
+
+    def qc_owner
+      lab_ware
     end
 
     def control_worksheet_printing(&block)

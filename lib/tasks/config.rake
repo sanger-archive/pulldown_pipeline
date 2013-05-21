@@ -69,6 +69,7 @@ namespace :config do
         presenters["ISC-HTP hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => "Presenters::BaitedPresenter")
         presenters["ISC-HTP cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger')
 
+        presenters["Pulldown QC plate"].merge!(   :presenter_class => "Presenters::QCPlatePresenter")
       end
 
       puts "Preparing plate purpose forms, presenters, and state changers ..."

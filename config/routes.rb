@@ -15,6 +15,7 @@ PulldownPipeline::Application.routes.draw do
   resources :pulldown_plates, :controller => :plates do
     resources :children, :controller => :plate_creation
     resources :tubes,    :controller => :tube_creation
+    resources :qc_files, :controller => :qc_files
   end
   post '/fail_wells/:id', :controller => :plates, :action => 'fail_wells', :as => :fail_wells
 
@@ -23,7 +24,7 @@ PulldownPipeline::Application.routes.draw do
   end
 
   resources :pulldown_multiplexed_library_tubes, :controller => :tubes do
-
+    resources :qc_files, :controller => :qc_files
   end
 
   # Printing can do individual or multiple labels
