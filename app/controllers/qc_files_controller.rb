@@ -8,11 +8,11 @@ class QcFilesController < ApplicationController
 
   def create
     plate.qc_files.create_from_file!(params['qc_file'], params['qc_file'].original_filename)
-    redirect_to(illumina_b_plate_path(params['illumina_b_plate_id']))
+    redirect_to(pulldown_plate_path(params['pulldown_plate_id']))
   end
 
   def plate
-    api.plate.find(params['illumina_b_plate_id'])
+    api.plate.find(params['pulldown_plate_id'])
   end
 
 end

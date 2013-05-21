@@ -35,6 +35,8 @@ module Presenters
       end
     end
 
+    write_inheritable_attribute :has_qc_data?, true
+
     write_inheritable_attribute :authenticated_tab_states, {
         :pending    =>  [ 'summary-button' ],
         :started    =>  [ 'summary-button' ],

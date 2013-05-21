@@ -9,7 +9,7 @@
       <%= render :partial => 'lab_ware/tube.html.erb', :locals => { :tube => @presenter.tube } %>
     <% end %>
     <%= section do %>
-      <%= render(:partial => 'labware/qc_data') if @presenter.has_qc_data? %>
+      <%= render(:partial => 'lab_ware/qc_data') if @presenter.has_qc_data? %>
     <% end %>
   <% end %>
 
