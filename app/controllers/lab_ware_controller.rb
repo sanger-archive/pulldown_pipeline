@@ -26,6 +26,7 @@ class LabWareController < ApplicationController
       }
       format.csv {
         render @presenter.csv
+        response.headers['Content-Disposition']="inline; filename=#{@presenter.filename(params['offset'])}" if @presenter.filename
         response.headers["Vary"]="Accept"
       }
       format.json {

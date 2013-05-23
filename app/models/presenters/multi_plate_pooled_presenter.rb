@@ -40,6 +40,7 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
   }
 
   write_inheritable_attribute :robot_name, 'nx8'
+  write_inheritable_attribute :bed_prefix, 'PCRXP'
 
   def transfers
     self.plate.creation_transfers.map do |ct|
@@ -65,6 +66,19 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
     @all_wells = {}
     ('A'..'H').each {|r| (1..12).each{|c| @all_wells["#{r}#{c}"]="H12"}}
     @all_wells
+  end
+
+  def csv_file_links
+    links = []
+    (self.plate.creation_transfers.count/4.0).ceil.times do |i|
+      links << [i+1,"#{Rails.application.routes.url_helpers.pulldown_plate_path(plate.uuid)}.csv?offset=#{i}"]
+    end
+    links
+  end
+
+  def filename(offset=nil)
+    return true if offset.nil?
+    "#{plate.barcode.prefix}#{plate.barcode.number}_#{offset.to_i+1}"
   end
 
 end

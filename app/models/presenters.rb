@@ -12,6 +12,7 @@ module Presenters
         write_inheritable_attribute :has_qc_data?, false
 
         class_inheritable_reader :robot_name
+        class_inheritable_reader :bed_prefix
       end
     end
 
@@ -114,6 +115,14 @@ module Presenters
     def self.lookup_for(plate)
       plate_details = Settings.purposes[plate.plate_purpose.uuid] or raise UnknownPlateType, plate
       plate_details[:presenter_class].constantize
+    end
+
+    def csv_file_links
+      [["","#{Rails.application.routes.url_helpers.pulldown_plate_path(plate.uuid)}.csv"]]
+    end
+
+    def filename
+      false
     end
   end
 end
