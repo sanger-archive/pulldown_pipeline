@@ -13,7 +13,7 @@ module Robots
       end
 
       def last_round?
-        plate.creation_transfers.count >= range.last
+        plate.creation_transfers.count <= range.max
       end
 
       def each_parent
