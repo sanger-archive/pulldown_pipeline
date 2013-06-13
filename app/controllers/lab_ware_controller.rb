@@ -18,20 +18,27 @@ class LabWareController < ApplicationController
 
 
   def show
-    @presenter = presenter_for(@lab_ware)
-    respond_to do |format|
-      format.html {
-        render @presenter.page
-        response.headers["Vary"]="Accept"
-      }
-      format.csv {
-        render @presenter.csv
-        response.headers['Content-Disposition']="inline; filename=#{@presenter.filename(params['offset'])}" if @presenter.filename
-        response.headers["Vary"]="Accept"
-      }
-      format.json {
-        response.headers["Vary"]="Accept"
-      }
+    begin
+      @presenter = presenter_for(@lab_ware)
+      respond_to do |format|
+        format.html {
+          render @presenter.page
+          response.headers["Vary"]="Accept"
+        }
+        format.csv {
+          render @presenter.csv
+          response.headers['Content-Disposition']="inline; filename=#{@presenter.filename(params['offset'])}" if @presenter.filename
+          response.headers["Vary"]="Accept"
+        }
+        format.json {
+          response.headers["Vary"]="Accept"
+        }
+      end
+    rescue Presenters::PlatePresenter::UnknownPlateType => exception
+      redirect_to(
+        search_path,
+        :notice => "#{exception.message}. Perhaps you are using the wrong pipeline application?"
+      )
     end
   end
 
