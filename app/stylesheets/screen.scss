@@ -29,8 +29,7 @@ body {
   @include border-radius(15px);
   @include border-top-left-radius(0);
   margin: 5px;
-  /* Use transparency for the background color or FF ridge will look bad... */
-  border: 1px ridge rgba(11,35,75,0.5);
+  border: 1px outset rgb(11,35,75);
   vertical-align: middle;
   text-align:     center;
   background:     #003557;
@@ -328,4 +327,3 @@ div.scan-plate a.bed-status-bad, div.scan-plate a.bed-status-good, div.scan-plat
 .ui-field-contain label.plate-label {
   width: 4em;
 }
-
