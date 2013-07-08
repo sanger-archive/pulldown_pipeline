@@ -2,6 +2,8 @@ module Presenters
   class TubePresenter
     include Presenter
 
+    write_inheritable_attribute :has_qc_data?, true
+
     state_machine :state, :initial => :pending do
       Statemachine::StateTransitions.inject(self)
 
