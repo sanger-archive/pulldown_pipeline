@@ -1,5 +1,8 @@
 namespace :config do
   desc 'Generates a configuration file for the current Rails environment'
+
+  require "#{Rails.root}/config/robots.rb"
+
   task :generate => :environment do
     api = Sequencescape::Api.new(PulldownPipeline::Application.config.api_connection_options)
 
@@ -59,16 +62,30 @@ namespace :config do
         presenters["ISC lib pool"].merge!(:form_class => "Forms::CustomPoolingForm", :presenter_class => "Presenters::CustomPooledPresenter")
         presenters["ISC hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => "Presenters::BaitedPresenter")
         presenters["ISC cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger')
+
+        # ISC-HTP plates
+        presenters["Lib PCR-XP"].merge!( :presenter_class => "Presenters::LibPcrXpPresenter", :selected_child_purpose => "ISC-HTP lib pool")
+        presenters["ISC-HTP lib pool"].merge!(:form_class => "Forms::MultiPlatePoolingForm", :presenter_class => "Presenters::MultiPlatePooledPresenter")
+        presenters["ISC-HTP hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => "Presenters::BaitedPresenter")
+        presenters["ISC-HTP cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger')
+
+        presenters["Pulldown QC plate"].merge!(   :presenter_class => "Presenters::QCPlatePresenter")
       end
 
       puts "Preparing plate purpose forms, presenters, and state changers ..."
 
+      configuration[:purpose_uuids] = {}
+
       api.plate_purpose.all.each do |plate_purpose|
-        next unless plate_purpose.name == 'Pulldown QC plate' or plate_purpose.name =~ /^(WGS|SC|ISC)\s/ # Ignore unnecessary plates
+        next unless plate_purpose.name == 'Pulldown QC plate' or plate_purpose.name =~ /^(WGS|SC|ISC|ISC-HTP)\s/ or plate_purpose.name == 'Lib PCR-XP' # Ignore unnecessary plates
         plate_purposes[plate_purpose.uuid] = name_to_details[plate_purpose.name].dup.merge(
           :name => plate_purpose.name
         )
+        configuration[:purpose_uuids][plate_purpose.name] = plate_purpose.uuid
       end
+
+      configuration[:robots] = ROBOT_CONFIG
+
     end
 
     # Write out the current environment configuration file

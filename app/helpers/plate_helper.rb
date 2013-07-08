@@ -33,28 +33,11 @@ module PlateHelper
   end
   private :sortable_well_location_for
 
-  def sorted_sequencing_pool_json
-    failed_wells = @creation_form.plate.wells.select {|w| ['failed','unknown'].include?(w.state) }.map(&:location)
-
-    # Reorder pools to column major order & eliminate failed wells from pool
-    sorted_pool_array = @creation_form.plate.pools.map do |pool_id,pool|
-      [pool_id,pool].tap do
-        pool['failures']  = pool['wells'] & failed_wells
-        pool['all_wells'] = pool['wells'].sort_by(&Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.method(:find_index))
-        pool['wells']     = pool['all_wells'] - pool['failures']
-      end
-    end.sort_by do |(_,pool)|
-      sortable_well_location_for(pool['wells'].first)
-    end
-
-    Hash[sorted_pool_array].to_json.html_safe
-  end
-
   def sorted_pre_cap_group_json
-    failed_wells = @creation_form.plate.wells.select {|w| ['failed','unknown'].include?(w.state) }.map(&:location)
+    failed_wells = current_plate.wells.select {|w| ['failed','unknown'].include?(w.state) }.map(&:location)
 
 
-    sorted_group_array = @creation_form.plate.pre_cap_groups.map do |group_id,group|
+    sorted_group_array = current_plate.pre_cap_groups.map do |group_id,group|
       [group_id,group].tap do
         group['failures']  = group['wells'] & failed_wells
         group['all_wells'] = group['wells'].sort_by(&Pulldown::PooledPlate::WELLS_IN_COLUMN_MAJOR_ORDER.method(:find_index))
@@ -65,6 +48,10 @@ module PlateHelper
     end
 
     Hash[sorted_group_array].to_json.html_safe
+  end
+
+  def current_plate
+    (@creation_form||@presenter).plate
   end
 
 end

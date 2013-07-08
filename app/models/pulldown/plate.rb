@@ -13,7 +13,10 @@ class Pulldown::Plate < Sequencescape::Plate
 
     # ISC does two stages of pooling
     'ISC lib pool',
-    'ISC cap lib pool'
+    'ISC cap lib pool',
+
+    'ISC-HTP lib pool',
+    'ISC-HTP cap lib pool'
   ]
 
   def is_a_final_pooling_plate?

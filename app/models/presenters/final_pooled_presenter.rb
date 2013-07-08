@@ -10,6 +10,8 @@ class Presenters::FinalPooledPresenter < Presenters::PooledPresenter
     :failed     =>  [ 'summary-button' ]
   }
 
+  write_inheritable_attribute :has_qc_data?, true
+
   module StateDoesNotAllowTubePreviewing
     def control_tube_preview(&block)
       # Does nothing because you are not allowed to!

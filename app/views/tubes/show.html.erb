@@ -4,8 +4,13 @@
   <% end %>
 
   <%= content do %>
-    <h2>Tube Status - <%= @presenter.tube.state.titleize %></h1>
-    <%= render :partial => 'lab_ware/tube.html.erb', :locals => { :tube => @presenter.tube } %>
+    <%= section do %>
+      <h2>Tube Status - <%= @presenter.tube.state.titleize %></h1>
+      <%= render :partial => 'lab_ware/tube.html.erb', :locals => { :tube => @presenter.tube } %>
+    <% end %>
+    <%= section do %>
+      <%= render(:partial => 'lab_ware/qc_data') if @presenter.has_qc_data? %>
+    <% end %>
   <% end %>
 
   <%= footer %>

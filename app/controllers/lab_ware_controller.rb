@@ -18,10 +18,27 @@ class LabWareController < ApplicationController
 
 
   def show
-    @presenter = presenter_for(@lab_ware)
-    respond_to do |format|
-      format.html { render @presenter.page }
-      format.csv
+    begin
+      @presenter = presenter_for(@lab_ware)
+      respond_to do |format|
+        format.html {
+          render @presenter.page
+          response.headers["Vary"]="Accept"
+        }
+        format.csv {
+          render @presenter.csv
+          response.headers['Content-Disposition']="inline; filename=#{@presenter.filename(params['offset'])}" if @presenter.filename
+          response.headers["Vary"]="Accept"
+        }
+        format.json {
+          response.headers["Vary"]="Accept"
+        }
+      end
+    rescue Presenters::PlatePresenter::UnknownPlateType => exception
+      redirect_to(
+        search_path,
+        :notice => "#{exception.message}. Perhaps you are using the wrong pipeline application?"
+      )
     end
   end
 
@@ -29,7 +46,7 @@ class LabWareController < ApplicationController
     state_changer_for(params[:purpose_uuid], params[:id]).move_to!(params[:state], params[:reason])
 
     respond_to do |format|
-      format.html { 
+      format.html {
         redirect_to(
           search_path,
           :notice => "Labware: #{params[:labware_ean13_barcode]} has been changed to a state of #{params[:state].titleize}"

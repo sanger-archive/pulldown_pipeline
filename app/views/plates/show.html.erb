@@ -18,6 +18,7 @@
           <li id="plate-QC-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-QC-button" data-icon="add">Create QC Plate</a></li>
           <li id="plate-state-button"><a data-theme="a" href="#" class="navbar-link" rel="plate-state-button" data-icon="gear">Change Plate State</a></li>
           <li id="well-failing-button"><a data-theme="a" href="#" class="navbar-link" rel="well-failing-button" data-icon="delete">Fail Wells</a></li>
+          <li id="robot-verification-button"><a data-theme="a" href="<%= @presenter.robot_name.present? ? robot_path(@presenter.robot_name) : '#' %>" class="navbar-link" rel="robot-verification-button" data-icon="gear">Bed Verification</a></li>
         <% end -%>
       </ul>
     </div>
@@ -32,7 +33,10 @@
         <div id="plate-summary" class="scape-ui-block">
           <%= render(:partial => @presenter.summary_partial, :locals => { :presenter => @presenter }) %>
         </div>
-          <%= link_to "Download Worksheet CSV", "#{pulldown_plate_path(@presenter.plate.uuid)}.csv", :rel => "external" %>
+
+        <% @presenter.csv_file_links.each do |link| %>
+          <%= link_to("Download Worksheet CSV #{link.first}", link.last, :rel => "external") %>
+        <% end %>
 
         <div id="well-failing" class="scape-ui-block" style="display:none;">
           <h2>Fail Wells</h2>
@@ -48,6 +52,8 @@
             <%= t("#{plate_type_and_state}.instructions").html_safe %>
           </ol>
         </div>
+
+        <%= render(:partial => 'lab_ware/qc_data') if @presenter.has_qc_data? %>
 
         <div id="plate-printing"  class="scape-ui-block" style="display:none;">
           <%= render(:partial => 'plate_printing') %>
