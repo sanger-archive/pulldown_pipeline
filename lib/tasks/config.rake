@@ -66,8 +66,12 @@ namespace :config do
         # ISC-HTP plates
         presenters["Lib PCR-XP"].merge!( :presenter_class => "Presenters::LibPcrXpPresenter", :selected_child_purpose => "ISC-HTP lib pool")
         presenters["ISC-HTP lib pool"].merge!(:form_class => "Forms::MultiPlatePoolingForm", :presenter_class => "Presenters::MultiPlatePooledPresenter")
-        presenters["ISC-HTP hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => "Presenters::BaitedPresenter")
-        presenters["ISC-HTP cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger')
+        presenters["ISC-HTP hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'nx8-pre-hyb-pool')
+        presenters['ISC-HTP cap lib'].merge!( :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-cap-wash')
+        presenters['ISC-HTP cap lib PCR'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-setup')
+        presenters['ISC-HTP cap lib PCR-XP'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-cleanup')
+        presenters["ISC-HTP cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledRobotPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger')
+
 
         presenters["Pulldown QC plate"].merge!(   :presenter_class => "Presenters::QCPlatePresenter")
       end
