@@ -69,4 +69,8 @@ class Presenters::FinalPooledPresenter < Presenters::PooledPresenter
   def tube_state=(state)
     # Ignore this
   end
+
+  def default_tube_printer_uuid
+    Settings.printers[location][Settings.purposes[default_child_purpose.uuid].default_printer_type]
+  end
 end
