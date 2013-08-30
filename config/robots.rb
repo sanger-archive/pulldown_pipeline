@@ -10,14 +10,14 @@ ROBOT_CONFIG = {
     :name   => 'NX8 Lib PCR-XP to ISC-HTP Lib Pool',
     :layout => 'bed',
     :beds   => {
-      BED[1]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
       BED[2]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
+      BED[6]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
       BED[3]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
-      BED[4]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
+      BED[7]  => {:purpose => 'Lib PCR-XP', :states => ['qc_complete'], :child=>BED[5]},
       BED[5]  => {
         :purpose => 'ISC-HTP lib pool',
         :states => ['pending','started'],
-        :parents =>[BED[1],BED[2],BED[3],BED[4],BED[1],BED[2],BED[3],BED[4]],
+        :parents =>[BED[2],BED[6],BED[3],BED[7],BED[2],BED[6],BED[3],BED[7]],
         :target_state => 'nx_in_progress'
       }
     },
@@ -28,11 +28,11 @@ ROBOT_CONFIG = {
     :name   => 'NX8 ISC-HTP Lib Pool to Hyb',
     :layout => 'bed',
     :beds   => {
-      BED[1]  => {:purpose => 'ISC-HTP lib pool', :states => ['passed'], :child=>BED[9]},
-      BED[9]  => {
+      BED[5]  => {:purpose => 'ISC-HTP lib pool', :states => ['passed'], :child=>BED[6]},
+      BED[6]  => {
         :purpose => 'ISC-HTP hyb',
         :states => ['pending'],
-        :parents =>[BED[1]],
+        :parents =>[BED[5]],
         :target_state => 'started'
       }
     }
