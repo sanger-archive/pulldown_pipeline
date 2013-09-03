@@ -71,6 +71,6 @@ class Presenters::FinalPooledPresenter < Presenters::PooledPresenter
   end
 
   def default_tube_printer_uuid
-    Settings.printers[Settings.purposes[default_child_purpose.uuid].default_printer_type]
+    Settings.printers[:tube]
   end
 end
