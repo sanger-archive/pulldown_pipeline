@@ -21,14 +21,21 @@ module Robots
         StateChangers.lookup_for(plate.plate_purpose.uuid).new(api, plate.uuid, user_uuid).move_to!(target_state,"Robot #{robot.name} started")
       end
 
+      def error(message)
+        @error_message = "Plate #{plate.barcode.ean13} is #{plate.state} when it should be #{states.join(', ')}."
+        false
+      end
+      private :error
+
+
       def valid?
         case
         when plate.nil? # The bed is empty or untested
           return true
         when !states.include?(plate.state) # The plate is in the wrong state
-          raise BedError, "Plate #{plate.barcode.ean13} is #{plate.state} when it should be #{states.join(', ')}."
+          error("Plate #{plate.barcode.ean13} is #{plate.state} when it should be #{states.join(', ')}.")
         when plate.plate_purpose.uuid != Settings.purpose_uuids[purpose]
-          raise BedError, "Plate #{plate.barcode.ean13} is not a #{purpose}."
+          error("Plate #{plate.barcode.ean13} is not a #{purpose}.")
         else
           true
         end
@@ -51,7 +58,7 @@ module Robots
     def self.find(options)
       robot_settings = Settings.robots[options[:name]]
       raise ActionController::RoutingError.new("Robot #{options[:name]} Not Found") if robot_settings.nil?
-      robot_class = (robot_settings[:class]||'Robot').constantize
+      robot_class = (robot_settings[:class]||'Robots::Robot').constantize
       robot_class.new(robot_settings.merge(options))
     end
 
@@ -70,7 +77,7 @@ module Robots
     def perform_transfer(bed_settings)
       beds.each do |id, bed|
         bed.load(bed_settings[id]) if bed.has_transition?
-        bed.valid?
+        bed.valid? or raise BedError, bed.error_message
       end
       beds.values.each(&:transition)
     end

@@ -39,7 +39,7 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
     :failed         =>  [ 'summary-button' ]
   }
 
-  write_inheritable_attribute :robot_name, 'nx8'
+  write_inheritable_attribute :robot_name, 'nx8-pre-cap-pool'
   write_inheritable_attribute :bed_prefix, 'PCRXP'
 
   def transfers
