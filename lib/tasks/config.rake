@@ -79,14 +79,14 @@ namespace :config do
         presenters["ISC hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => "Presenters::BaitedPresenter", :default_printer_type => :plate_b)
         presenters["ISC cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger', :default_printer_type => :plate_b)
 
-        # ISC-HTP plates
-        presenters["Lib PCR-XP"].merge!( :presenter_class => "Presenters::LibPcrXpPresenter", :selected_child_purpose => "ISC-HTP lib pool")
-        presenters["ISC-HTP lib pool"].merge!(:form_class => "Forms::MultiPlatePoolingForm", :presenter_class => "Presenters::MultiPlatePooledPresenter", :default_printer_type => :plate_b)
-        presenters["ISC-HTP hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'nx8-pre-hyb-pool', :default_printer_type => :plate_b)
-        presenters['ISC-HTP cap lib'].merge!( :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-cap-wash', :default_printer_type => :plate_b)
-        presenters['ISC-HTP cap lib PCR'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-setup', :default_printer_type => :plate_b)
-        presenters['ISC-HTP cap lib PCR-XP'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-cleanup', :default_printer_type => :plate_b)
-        presenters["ISC-HTP cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledRobotPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger', :default_printer_type => :plate_b)
+        # ISCH plates
+        presenters["Lib PCR-XP"].merge!( :presenter_class => "Presenters::LibPcrXpPresenter", :selected_child_purpose => "ISCH lib pool")
+        presenters["ISCH lib pool"].merge!(:form_class => "Forms::MultiPlatePoolingForm", :presenter_class => "Presenters::MultiPlatePooledPresenter", :default_printer_type => :plate_b)
+        presenters["ISCH hyb"].merge!(           :form_class => "Forms::BaitingForm",       :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'nx8-pre-hyb-pool', :default_printer_type => :plate_b)
+        presenters['ISCH cap lib'].merge!( :presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-cap-wash', :default_printer_type => :plate_b)
+        presenters['ISCH cap lib PCR'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-setup', :default_printer_type => :plate_b)
+        presenters['ISCH cap lib PCR-XP'].merge!(:presenter_class => 'Presenters::StandardRobotPresenter', :robot=>'bravo-post-cap-pcr-cleanup', :default_printer_type => :plate_b)
+        presenters["ISCH cap lib pool"].merge!( :form_class => "Forms::AutoPoolingForm",   :presenter_class => "Presenters::FinalPooledRobotPresenter",  :state_changer_class => 'StateChangers::AutoPoolingStateChanger', :default_printer_type => :plate_b)
 
 
         presenters["Pulldown QC plate"].merge!(   :presenter_class => "Presenters::QCPlatePresenter")
@@ -97,7 +97,7 @@ namespace :config do
       configuration[:purpose_uuids] = {}
 
       api.plate_purpose.all.each do |plate_purpose|
-        next unless plate_purpose.name == 'Pulldown QC plate' or plate_purpose.name =~ /^(WGS|SC|ISC|ISC-HTP)\s/ or plate_purpose.name == 'Lib PCR-XP' # Ignore unnecessary plates
+        next unless plate_purpose.name == 'Pulldown QC plate' or plate_purpose.name =~ /^(WGS|SC|ISC|ISCH)\s/ or plate_purpose.name == 'Lib PCR-XP' # Ignore unnecessary plates
         plate_purposes[plate_purpose.uuid] = name_to_details[plate_purpose.name].dup.merge(
           :name => plate_purpose.name
         )
