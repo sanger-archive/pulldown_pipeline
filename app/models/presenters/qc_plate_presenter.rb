@@ -1,5 +1,5 @@
 module Presenters
-  class QcPlatePresenter < StandardPresenter
+  class QCPlatePresenter < StandardPresenter
 
     write_inheritable_attribute :has_qc_data?, true
 
