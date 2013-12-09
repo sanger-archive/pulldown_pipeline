@@ -1,3 +1,952 @@
 /* Welcome to Compass. Use this file to define print styles.
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css" /> */
+/*
+ * Rather helpfully browsers decide to save the user ink and not print background
+ * colours. While this is possible to override at the browser level, it is non-obvious
+ * and I couldn't even find the option in my version of Firefox. Fortunately the
+ * browsers do render drop-shadows. (Well IE doesn't, but we don't care.)
+ */
+/*
+ * Pinched from the crayola wiki page: http://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors
+ * Honestly, couldn't come up with a better set of colours and ones with greater names.  All credit
+ * to them!
+ */
+/* line 22, ../../app/stylesheets/print-colours.scss */
+.colour-1 {
+  background-color: #ea7e5d;
+  box-shadow: inset 0 0 0 5mm #ea7e5d;
+}
+
+/* line 23, ../../app/stylesheets/print-colours.scss */
+.colour-2 {
+  background-color: #78dbe2;
+  box-shadow: inset 0 0 0 5mm #78dbe2;
+}
+
+/* line 24, ../../app/stylesheets/print-colours.scss */
+.colour-3 {
+  background-color: #fdd9b5;
+  box-shadow: inset 0 0 0 5mm #fdd9b5;
+}
+
+/* line 25, ../../app/stylesheets/print-colours.scss */
+.colour-4 {
+  background-color: #cd9575;
+  box-shadow: inset 0 0 0 5mm #cd9575;
+}
+
+/* line 26, ../../app/stylesheets/print-colours.scss */
+.colour-5 {
+  background-color: #87a96b;
+  box-shadow: inset 0 0 0 5mm #87a96b;
+}
+
+/* line 27, ../../app/stylesheets/print-colours.scss */
+.colour-6 {
+  background-color: #ffa474;
+  box-shadow: inset 0 0 0 5mm #ffa474;
+}
+
+/* line 28, ../../app/stylesheets/print-colours.scss */
+.colour-7 {
+  background-color: #fae7b5;
+  box-shadow: inset 0 0 0 5mm #fae7b5;
+}
+
+/* line 29, ../../app/stylesheets/print-colours.scss */
+.colour-8 {
+  background-color: #9f8170;
+  box-shadow: inset 0 0 0 5mm #9f8170;
+}
+
+/* line 30, ../../app/stylesheets/print-colours.scss */
+.colour-9 {
+  background-color: #fd7c6e;
+  box-shadow: inset 0 0 0 5mm #fd7c6e;
+}
+
+/* line 31, ../../app/stylesheets/print-colours.scss */
+.colour-10 {
+  background-color: #ababab;
+  box-shadow: inset 0 0 0 5mm #ababab;
+}
+
+/* line 32, ../../app/stylesheets/print-colours.scss */
+.colour-11 {
+  background-color: #ace5ee;
+  box-shadow: inset 0 0 0 5mm #ace5ee;
+}
+
+/* line 33, ../../app/stylesheets/print-colours.scss */
+.colour-12 {
+  background-color: #1f75fe;
+  box-shadow: inset 0 0 0 5mm #1f75fe;
+}
+
+/* line 34, ../../app/stylesheets/print-colours.scss */
+.colour-13 {
+  background-color: #a2a2d0;
+  box-shadow: inset 0 0 0 5mm #a2a2d0;
+}
+
+/* line 35, ../../app/stylesheets/print-colours.scss */
+.colour-14 {
+  background-color: #6699cc;
+  box-shadow: inset 0 0 0 5mm #6699cc;
+}
+
+/* line 36, ../../app/stylesheets/print-colours.scss */
+.colour-15 {
+  background-color: #0d98ba;
+  box-shadow: inset 0 0 0 5mm #0d98ba;
+}
+
+/* line 37, ../../app/stylesheets/print-colours.scss */
+.colour-16 {
+  background-color: #7366bd;
+  box-shadow: inset 0 0 0 5mm #7366bd;
+}
+
+/* line 38, ../../app/stylesheets/print-colours.scss */
+.colour-17 {
+  background-color: #de5d83;
+  box-shadow: inset 0 0 0 5mm #de5d83;
+}
+
+/* line 39, ../../app/stylesheets/print-colours.scss */
+.colour-18 {
+  background-color: #cb4154;
+  box-shadow: inset 0 0 0 5mm #cb4154;
+}
+
+/* line 40, ../../app/stylesheets/print-colours.scss */
+.colour-19 {
+  background-color: #b4674d;
+  box-shadow: inset 0 0 0 5mm #b4674d;
+}
+
+/* line 41, ../../app/stylesheets/print-colours.scss */
+.colour-20 {
+  background-color: #ff7f49;
+  box-shadow: inset 0 0 0 5mm #ff7f49;
+}
+
+/* line 42, ../../app/stylesheets/print-colours.scss */
+.colour-21 {
+  background-color: #efdecd;
+  box-shadow: inset 0 0 0 5mm #efdecd;
+}
+
+/* line 43, ../../app/stylesheets/print-colours.scss */
+.colour-22 {
+  background-color: #b0b7c6;
+  box-shadow: inset 0 0 0 5mm #b0b7c6;
+}
+
+/* line 44, ../../app/stylesheets/print-colours.scss */
+.colour-23 {
+  background-color: #ffff99;
+  box-shadow: inset 0 0 0 5mm #ffff99;
+}
+
+/* line 45, ../../app/stylesheets/print-colours.scss */
+.colour-24 {
+  background-color: #1cd3a2;
+  box-shadow: inset 0 0 0 5mm #1cd3a2;
+}
+
+/* line 46, ../../app/stylesheets/print-colours.scss */
+.colour-25 {
+  background-color: #ffaacc;
+  box-shadow: inset 0 0 0 5mm #ffaacc;
+}
+
+/* line 47, ../../app/stylesheets/print-colours.scss */
+.colour-26 {
+  background-color: #dd4492;
+  box-shadow: inset 0 0 0 5mm #dd4492;
+}
+
+/* line 48, ../../app/stylesheets/print-colours.scss */
+.colour-27 {
+  background-color: #1dacd6;
+  box-shadow: inset 0 0 0 5mm #1dacd6;
+}
+
+/* line 49, ../../app/stylesheets/print-colours.scss */
+.colour-28 {
+  background-color: #bc5d58;
+  box-shadow: inset 0 0 0 5mm #bc5d58;
+}
+
+/* line 50, ../../app/stylesheets/print-colours.scss */
+.colour-29 {
+  background-color: #dd9475;
+  box-shadow: inset 0 0 0 5mm #dd9475;
+}
+
+/* line 51, ../../app/stylesheets/print-colours.scss */
+.colour-30 {
+  background-color: #9aceeb;
+  box-shadow: inset 0 0 0 5mm #9aceeb;
+}
+
+/* line 52, ../../app/stylesheets/print-colours.scss */
+.colour-31 {
+  background-color: #ffbcd9;
+  box-shadow: inset 0 0 0 5mm #ffbcd9;
+}
+
+/* line 53, ../../app/stylesheets/print-colours.scss */
+.colour-32 {
+  background-color: #fddb6d;
+  box-shadow: inset 0 0 0 5mm #fddb6d;
+}
+
+/* line 54, ../../app/stylesheets/print-colours.scss */
+.colour-33 {
+  background-color: #2b6cc4;
+  box-shadow: inset 0 0 0 5mm #2b6cc4;
+}
+
+/* line 55, ../../app/stylesheets/print-colours.scss */
+.colour-34 {
+  background-color: #efcdb8;
+  box-shadow: inset 0 0 0 5mm #efcdb8;
+}
+
+/* line 56, ../../app/stylesheets/print-colours.scss */
+.colour-35 {
+  background-color: #6e5160;
+  box-shadow: inset 0 0 0 5mm #6e5160;
+}
+
+/* line 57, ../../app/stylesheets/print-colours.scss */
+.colour-36 {
+  background-color: #ceff1d;
+  box-shadow: inset 0 0 0 5mm #ceff1d;
+}
+
+/* line 58, ../../app/stylesheets/print-colours.scss */
+.colour-37 {
+  background-color: #71bc78;
+  box-shadow: inset 0 0 0 5mm #71bc78;
+}
+
+/* line 59, ../../app/stylesheets/print-colours.scss */
+.colour-38 {
+  background-color: #6dae81;
+  box-shadow: inset 0 0 0 5mm #6dae81;
+}
+
+/* line 60, ../../app/stylesheets/print-colours.scss */
+.colour-39 {
+  background-color: #c364c5;
+  box-shadow: inset 0 0 0 5mm #c364c5;
+}
+
+/* line 61, ../../app/stylesheets/print-colours.scss */
+.colour-40 {
+  background-color: #cc6666;
+  box-shadow: inset 0 0 0 5mm #cc6666;
+}
+
+/* line 62, ../../app/stylesheets/print-colours.scss */
+.colour-41 {
+  background-color: #e7c697;
+  box-shadow: inset 0 0 0 5mm #e7c697;
+}
+
+/* line 63, ../../app/stylesheets/print-colours.scss */
+.colour-42 {
+  background-color: #fcd975;
+  box-shadow: inset 0 0 0 5mm #fcd975;
+}
+
+/* line 64, ../../app/stylesheets/print-colours.scss */
+.colour-43 {
+  background-color: #a8e4a0;
+  box-shadow: inset 0 0 0 5mm #a8e4a0;
+}
+
+/* line 65, ../../app/stylesheets/print-colours.scss */
+.colour-44 {
+  background-color: #95918c;
+  box-shadow: inset 0 0 0 5mm #95918c;
+}
+
+/* line 66, ../../app/stylesheets/print-colours.scss */
+.colour-45 {
+  background-color: #1cac78;
+  box-shadow: inset 0 0 0 5mm #1cac78;
+}
+
+/* line 67, ../../app/stylesheets/print-colours.scss */
+.colour-46 {
+  background-color: #1164b4;
+  box-shadow: inset 0 0 0 5mm #1164b4;
+}
+
+/* line 68, ../../app/stylesheets/print-colours.scss */
+.colour-47 {
+  background-color: #f0e891;
+  box-shadow: inset 0 0 0 5mm #f0e891;
+}
+
+/* line 69, ../../app/stylesheets/print-colours.scss */
+.colour-48 {
+  background-color: #ff1dce;
+  box-shadow: inset 0 0 0 5mm #ff1dce;
+}
+
+/* line 70, ../../app/stylesheets/print-colours.scss */
+.colour-49 {
+  background-color: #b2ec5d;
+  box-shadow: inset 0 0 0 5mm #b2ec5d;
+}
+
+/* line 71, ../../app/stylesheets/print-colours.scss */
+.colour-50 {
+  background-color: #5d76cb;
+  box-shadow: inset 0 0 0 5mm #5d76cb;
+}
+
+/* line 72, ../../app/stylesheets/print-colours.scss */
+.colour-51 {
+  background-color: #ca3767;
+  box-shadow: inset 0 0 0 5mm #ca3767;
+}
+
+/* line 73, ../../app/stylesheets/print-colours.scss */
+.colour-52 {
+  background-color: #3bb08f;
+  box-shadow: inset 0 0 0 5mm #3bb08f;
+}
+
+/* line 74, ../../app/stylesheets/print-colours.scss */
+.colour-53 {
+  background-color: #fefe22;
+  box-shadow: inset 0 0 0 5mm #fefe22;
+}
+
+/* line 75, ../../app/stylesheets/print-colours.scss */
+.colour-54 {
+  background-color: #fcb4d5;
+  box-shadow: inset 0 0 0 5mm #fcb4d5;
+}
+
+/* line 76, ../../app/stylesheets/print-colours.scss */
+.colour-55 {
+  background-color: #fff44f;
+  box-shadow: inset 0 0 0 5mm #fff44f;
+}
+
+/* line 77, ../../app/stylesheets/print-colours.scss */
+.colour-56 {
+  background-color: #ffbd88;
+  box-shadow: inset 0 0 0 5mm #ffbd88;
+}
+
+/* line 78, ../../app/stylesheets/print-colours.scss */
+.colour-57 {
+  background-color: #f664af;
+  box-shadow: inset 0 0 0 5mm #f664af;
+}
+
+/* line 79, ../../app/stylesheets/print-colours.scss */
+.colour-58 {
+  background-color: #aaf0d1;
+  box-shadow: inset 0 0 0 5mm #aaf0d1;
+}
+
+/* line 80, ../../app/stylesheets/print-colours.scss */
+.colour-59 {
+  background-color: #cd4a4c;
+  box-shadow: inset 0 0 0 5mm #cd4a4c;
+}
+
+/* line 81, ../../app/stylesheets/print-colours.scss */
+.colour-60 {
+  background-color: #edd19c;
+  box-shadow: inset 0 0 0 5mm #edd19c;
+}
+
+/* line 82, ../../app/stylesheets/print-colours.scss */
+.colour-61 {
+  background-color: #979aaa;
+  box-shadow: inset 0 0 0 5mm #979aaa;
+}
+
+/* line 83, ../../app/stylesheets/print-colours.scss */
+.colour-62 {
+  background-color: #ff8243;
+  box-shadow: inset 0 0 0 5mm #ff8243;
+}
+
+/* line 84, ../../app/stylesheets/print-colours.scss */
+.colour-63 {
+  background-color: #c8385a;
+  box-shadow: inset 0 0 0 5mm #c8385a;
+}
+
+/* line 85, ../../app/stylesheets/print-colours.scss */
+.colour-64 {
+  background-color: #ef98aa;
+  box-shadow: inset 0 0 0 5mm #ef98aa;
+}
+
+/* line 86, ../../app/stylesheets/print-colours.scss */
+.colour-65 {
+  background-color: #fdbcb4;
+  box-shadow: inset 0 0 0 5mm #fdbcb4;
+}
+
+/* line 87, ../../app/stylesheets/print-colours.scss */
+.colour-66 {
+  background-color: #1a4876;
+  box-shadow: inset 0 0 0 5mm #1a4876;
+}
+
+/* line 88, ../../app/stylesheets/print-colours.scss */
+.colour-67 {
+  background-color: #30ba8f;
+  box-shadow: inset 0 0 0 5mm #30ba8f;
+}
+
+/* line 89, ../../app/stylesheets/print-colours.scss */
+.colour-68 {
+  background-color: #c54b8c;
+  box-shadow: inset 0 0 0 5mm #c54b8c;
+}
+
+/* line 90, ../../app/stylesheets/print-colours.scss */
+.colour-69 {
+  background-color: #1974d2;
+  box-shadow: inset 0 0 0 5mm #1974d2;
+}
+
+/* line 91, ../../app/stylesheets/print-colours.scss */
+.colour-70 {
+  background-color: #ffa343;
+  box-shadow: inset 0 0 0 5mm #ffa343;
+}
+
+/* line 92, ../../app/stylesheets/print-colours.scss */
+.colour-71 {
+  background-color: #bab86c;
+  box-shadow: inset 0 0 0 5mm #bab86c;
+}
+
+/* line 93, ../../app/stylesheets/print-colours.scss */
+.colour-72 {
+  background-color: #ff7538;
+  box-shadow: inset 0 0 0 5mm #ff7538;
+}
+
+/* line 94, ../../app/stylesheets/print-colours.scss */
+.colour-73 {
+  background-color: #ff2b2b;
+  box-shadow: inset 0 0 0 5mm #ff2b2b;
+}
+
+/* line 95, ../../app/stylesheets/print-colours.scss */
+.colour-74 {
+  background-color: #f8d568;
+  box-shadow: inset 0 0 0 5mm #f8d568;
+}
+
+/* line 96, ../../app/stylesheets/print-colours.scss */
+.colour-75 {
+  background-color: #e6a8d7;
+  box-shadow: inset 0 0 0 5mm #e6a8d7;
+}
+
+/* line 97, ../../app/stylesheets/print-colours.scss */
+.colour-76 {
+  background-color: #414a4c;
+  box-shadow: inset 0 0 0 5mm #414a4c;
+}
+
+/* line 98, ../../app/stylesheets/print-colours.scss */
+.colour-77 {
+  background-color: #ff6e4a;
+  box-shadow: inset 0 0 0 5mm #ff6e4a;
+}
+
+/* line 99, ../../app/stylesheets/print-colours.scss */
+.colour-78 {
+  background-color: #1ca9c9;
+  box-shadow: inset 0 0 0 5mm #1ca9c9;
+}
+
+/* line 100, ../../app/stylesheets/print-colours.scss */
+.colour-79 {
+  background-color: #ffcfab;
+  box-shadow: inset 0 0 0 5mm #ffcfab;
+}
+
+/* line 101, ../../app/stylesheets/print-colours.scss */
+.colour-80 {
+  background-color: #c5d0e6;
+  box-shadow: inset 0 0 0 5mm #c5d0e6;
+}
+
+/* line 102, ../../app/stylesheets/print-colours.scss */
+.colour-81 {
+  background-color: #fddde6;
+  box-shadow: inset 0 0 0 5mm #fddde6;
+}
+
+/* line 103, ../../app/stylesheets/print-colours.scss */
+.colour-82 {
+  background-color: #158078;
+  box-shadow: inset 0 0 0 5mm #158078;
+}
+
+/* line 104, ../../app/stylesheets/print-colours.scss */
+.colour-83 {
+  background-color: #fc74fd;
+  box-shadow: inset 0 0 0 5mm #fc74fd;
+}
+
+/* line 105, ../../app/stylesheets/print-colours.scss */
+.colour-84 {
+  background-color: #f78fa7;
+  box-shadow: inset 0 0 0 5mm #f78fa7;
+}
+
+/* line 106, ../../app/stylesheets/print-colours.scss */
+.colour-85 {
+  background-color: #8e4585;
+  box-shadow: inset 0 0 0 5mm #8e4585;
+}
+
+/* line 107, ../../app/stylesheets/print-colours.scss */
+.colour-86 {
+  background-color: #7442c8;
+  box-shadow: inset 0 0 0 5mm #7442c8;
+}
+
+/* line 108, ../../app/stylesheets/print-colours.scss */
+.colour-87 {
+  background-color: #9d81ba;
+  box-shadow: inset 0 0 0 5mm #9d81ba;
+}
+
+/* line 109, ../../app/stylesheets/print-colours.scss */
+.colour-88 {
+  background-color: #fe4eda;
+  box-shadow: inset 0 0 0 5mm #fe4eda;
+}
+
+/* line 110, ../../app/stylesheets/print-colours.scss */
+.colour-89 {
+  background-color: #ff496c;
+  box-shadow: inset 0 0 0 5mm #ff496c;
+}
+
+/* line 111, ../../app/stylesheets/print-colours.scss */
+.colour-90 {
+  background-color: #d68a59;
+  box-shadow: inset 0 0 0 5mm #d68a59;
+}
+
+/* line 112, ../../app/stylesheets/print-colours.scss */
+.colour-91 {
+  background-color: #714b23;
+  box-shadow: inset 0 0 0 5mm #714b23;
+}
+
+/* line 113, ../../app/stylesheets/print-colours.scss */
+.colour-92 {
+  background-color: #ff48d0;
+  box-shadow: inset 0 0 0 5mm #ff48d0;
+}
+
+/* line 114, ../../app/stylesheets/print-colours.scss */
+.colour-93 {
+  background-color: #e3256b;
+  box-shadow: inset 0 0 0 5mm #e3256b;
+}
+
+/* line 115, ../../app/stylesheets/print-colours.scss */
+.colour-94 {
+  background-color: #ee204d;
+  box-shadow: inset 0 0 0 5mm #ee204d;
+}
+
+/* line 116, ../../app/stylesheets/print-colours.scss */
+.colour-95 {
+  background-color: #ff5349;
+  box-shadow: inset 0 0 0 5mm #ff5349;
+}
+
+/* line 117, ../../app/stylesheets/print-colours.scss */
+.colour-96 {
+  background-color: #c0448f;
+  box-shadow: inset 0 0 0 5mm #c0448f;
+}
+
+/* line 118, ../../app/stylesheets/print-colours.scss */
+.colour-97 {
+  background-color: #1fcecb;
+  box-shadow: inset 0 0 0 5mm #1fcecb;
+}
+
+/* line 119, ../../app/stylesheets/print-colours.scss */
+.colour-98 {
+  background-color: #7851a9;
+  box-shadow: inset 0 0 0 5mm #7851a9;
+}
+
+/* line 120, ../../app/stylesheets/print-colours.scss */
+.colour-99 {
+  background-color: #ff9baa;
+  box-shadow: inset 0 0 0 5mm #ff9baa;
+}
+
+/* line 121, ../../app/stylesheets/print-colours.scss */
+.colour-100 {
+  background-color: #fc2847;
+  box-shadow: inset 0 0 0 5mm #fc2847;
+}
+
+/* line 122, ../../app/stylesheets/print-colours.scss */
+.colour-101 {
+  background-color: #76ff7a;
+  box-shadow: inset 0 0 0 5mm #76ff7a;
+}
+
+/* line 123, ../../app/stylesheets/print-colours.scss */
+.colour-102 {
+  background-color: #9fe2bf;
+  box-shadow: inset 0 0 0 5mm #9fe2bf;
+}
+
+/* line 124, ../../app/stylesheets/print-colours.scss */
+.colour-103 {
+  background-color: #a5694f;
+  box-shadow: inset 0 0 0 5mm #a5694f;
+}
+
+/* line 125, ../../app/stylesheets/print-colours.scss */
+.colour-104 {
+  background-color: #8a795d;
+  box-shadow: inset 0 0 0 5mm #8a795d;
+}
+
+/* line 126, ../../app/stylesheets/print-colours.scss */
+.colour-105 {
+  background-color: #45cea2;
+  box-shadow: inset 0 0 0 5mm #45cea2;
+}
+
+/* line 127, ../../app/stylesheets/print-colours.scss */
+.colour-106 {
+  background-color: #fb7efd;
+  box-shadow: inset 0 0 0 5mm #fb7efd;
+}
+
+/* line 128, ../../app/stylesheets/print-colours.scss */
+.colour-107 {
+  background-color: #cdc5c2;
+  box-shadow: inset 0 0 0 5mm #cdc5c2;
+}
+
+/* line 129, ../../app/stylesheets/print-colours.scss */
+.colour-108 {
+  background-color: #80daeb;
+  box-shadow: inset 0 0 0 5mm #80daeb;
+}
+
+/* line 130, ../../app/stylesheets/print-colours.scss */
+.colour-109 {
+  background-color: #eceabe;
+  box-shadow: inset 0 0 0 5mm #eceabe;
+}
+
+/* line 131, ../../app/stylesheets/print-colours.scss */
+.colour-110 {
+  background-color: #ffcf48;
+  box-shadow: inset 0 0 0 5mm #ffcf48;
+}
+
+/* line 132, ../../app/stylesheets/print-colours.scss */
+.colour-111 {
+  background-color: #fd5e53;
+  box-shadow: inset 0 0 0 5mm #fd5e53;
+}
+
+/* line 133, ../../app/stylesheets/print-colours.scss */
+.colour-112 {
+  background-color: #faa76c;
+  box-shadow: inset 0 0 0 5mm #faa76c;
+}
+
+/* line 134, ../../app/stylesheets/print-colours.scss */
+.colour-113 {
+  background-color: #18a7b5;
+  box-shadow: inset 0 0 0 5mm #18a7b5;
+}
+
+/* line 135, ../../app/stylesheets/print-colours.scss */
+.colour-114 {
+  background-color: #ebc7df;
+  box-shadow: inset 0 0 0 5mm #ebc7df;
+}
+
+/* line 136, ../../app/stylesheets/print-colours.scss */
+.colour-115 {
+  background-color: #fc89ac;
+  box-shadow: inset 0 0 0 5mm #fc89ac;
+}
+
+/* line 137, ../../app/stylesheets/print-colours.scss */
+.colour-116 {
+  background-color: #dbd7d2;
+  box-shadow: inset 0 0 0 5mm #dbd7d2;
+}
+
+/* line 138, ../../app/stylesheets/print-colours.scss */
+.colour-117 {
+  background-color: #17806d;
+  box-shadow: inset 0 0 0 5mm #17806d;
+}
+
+/* line 139, ../../app/stylesheets/print-colours.scss */
+.colour-118 {
+  background-color: #deaa88;
+  box-shadow: inset 0 0 0 5mm #deaa88;
+}
+
+/* line 140, ../../app/stylesheets/print-colours.scss */
+.colour-119 {
+  background-color: #77dde7;
+  box-shadow: inset 0 0 0 5mm #77dde7;
+}
+
+/* line 141, ../../app/stylesheets/print-colours.scss */
+.colour-120 {
+  background-color: #ffff66;
+  box-shadow: inset 0 0 0 5mm #ffff66;
+}
+
+/* line 142, ../../app/stylesheets/print-colours.scss */
+.colour-121 {
+  background-color: #926eae;
+  box-shadow: inset 0 0 0 5mm #926eae;
+}
+
+/* line 143, ../../app/stylesheets/print-colours.scss */
+.colour-122 {
+  background-color: #324ab2;
+  box-shadow: inset 0 0 0 5mm #324ab2;
+}
+
+/* line 144, ../../app/stylesheets/print-colours.scss */
+.colour-123 {
+  background-color: #f75394;
+  box-shadow: inset 0 0 0 5mm #f75394;
+}
+
+/* line 145, ../../app/stylesheets/print-colours.scss */
+.colour-124 {
+  background-color: #ffa089;
+  box-shadow: inset 0 0 0 5mm #ffa089;
+}
+
+/* line 146, ../../app/stylesheets/print-colours.scss */
+.colour-125 {
+  background-color: #8f509d;
+  box-shadow: inset 0 0 0 5mm #8f509d;
+}
+
+/* line 147, ../../app/stylesheets/print-colours.scss */
+.colour-126 {
+  background-color: white;
+  box-shadow: inset 0 0 0 5mm white;
+}
+
+/* line 148, ../../app/stylesheets/print-colours.scss */
+.colour-127 {
+  background-color: #a2add0;
+  box-shadow: inset 0 0 0 5mm #a2add0;
+}
+
+/* line 149, ../../app/stylesheets/print-colours.scss */
+.colour-128 {
+  background-color: #ff43a4;
+  box-shadow: inset 0 0 0 5mm #ff43a4;
+}
+
+/* line 150, ../../app/stylesheets/print-colours.scss */
+.colour-129 {
+  background-color: #fc6c85;
+  box-shadow: inset 0 0 0 5mm #fc6c85;
+}
+
+/* line 151, ../../app/stylesheets/print-colours.scss */
+.colour-130 {
+  background-color: #cda4de;
+  box-shadow: inset 0 0 0 5mm #cda4de;
+}
+
+/* line 152, ../../app/stylesheets/print-colours.scss */
+.colour-131 {
+  background-color: #fce883;
+  box-shadow: inset 0 0 0 5mm #fce883;
+}
+
+/* line 153, ../../app/stylesheets/print-colours.scss */
+.colour-132 {
+  background-color: #c5e384;
+  box-shadow: inset 0 0 0 5mm #c5e384;
+}
+
+/* line 154, ../../app/stylesheets/print-colours.scss */
+.colour-133 {
+  background-color: #ffae42;
+  box-shadow: inset 0 0 0 5mm #ffae42;
+}
+
+/* line 10, ../../app/stylesheets/print.scss */
+h1 {
+  font-size: larger;
+  display: inline;
+  font-family: sans-serif;
+}
+
+/* line 15, ../../app/stylesheets/print.scss */
+.plate-view {
+  border: 1px solid black;
+  float: left;
+  clear: left;
+  margin: 5mm 0;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -o-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -khtml-border-radius: 15px;
+  border-radius: 15px;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
+  -ms-border-top-left-radius: 0;
+  -khtml-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+/* line 23, ../../app/stylesheets/print.scss */
+.well {
+  width: 1.5em;
+  height: 1.5em;
+  padding: 0;
+  margin: 0;
+  border: 1px solid black;
+  -moz-border-radius: 5mm;
+  -webkit-border-radius: 5mm;
+  -o-border-radius: 5mm;
+  -ms-border-radius: 5mm;
+  -khtml-border-radius: 5mm;
+  border-radius: 5mm;
+}
+
+/* line 32, ../../app/stylesheets/print.scss */
+.aliquot {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -o-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -khtml-border-radius: 50%;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Tell chrome to render backgrounds. This isn't actually
+   * required, as we also use a drop-shadow to force Mozilla
+   * browsers to also colour prints. But it adds a layer of
+   * robustness if webkit/blink goes the way of IE and stops
+   * rendering drop-shadows on printouts */
+  -webkit-print-color-adjust: exact;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.5em;
+}
+
+/* line 45, ../../app/stylesheets/print.scss */
+#pools-information, #samples-information {
+  width: 40%;
+  float: right;
+  clear: right;
+}
+
+/* line 50, ../../app/stylesheets/print.scss */
+#information {
+  position: absolute;
+  top: 3em;
+  right: 0.5em;
+  margin: 3mm;
+  padding: 0;
+}
+
+/* line 55, ../../app/stylesheets/print.scss */
+#labware-summary-div {
+  position: relative;
+}
+
+/* line 58, ../../app/stylesheets/print.scss */
+#labware-summary-div > div {
+  display: none;
+}
+
+/* line 61, ../../app/stylesheets/print.scss */
+#pools-information .ui-li-divider {
+  border: solid 1px black;
+  margin: 0.5em 0 0 0;
+  padding: 0.25em;
+}
+
+/* line 66, ../../app/stylesheets/print.scss */
+#pools-information .ui-li-static {
+  border: solid 1px black;
+  border-top: none;
+  margin: 0;
+  padding: 0.25em;
+}
+
+/* line 72, ../../app/stylesheets/print.scss */
+#pools-information H3 {
+  display: inline;
+  font-size: 12pt;
+  padding-right: 0.5em;
+}
+
+/* line 77, ../../app/stylesheets/print.scss */
+#pools-information P {
+  font-size: 12pt;
+}
+
+/* line 81, ../../app/stylesheets/print.scss */
+#pools-information, #samples-information, #summary-information {
+  display: inline !important;
+}
+
+/* Hide all the interactive stuff */
+/* line 86, ../../app/stylesheets/print.scss */
+button, .instructions, .ui-btn, .ui-navbar, #navbar, .ui-block-b, #plate-view-control, .ui-loader, #labware-summary h2, #samples-information {
+  display: none !important;
+}
+
+/* line 90, ../../app/stylesheets/print.scss */
+ul {
+  list-style: none;
+}
+
+/* line 94, ../../app/stylesheets/print.scss */
+body {
+  font-family: serif;
+}
+
+#plate-summary h2, #plate-summary h3 {float: left; clear: left; margin: 0.5em 0.1em;}
