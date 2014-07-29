@@ -44,7 +44,7 @@ module PlateHelper
         group['wells']     = group['all_wells'] - group['failures']
       end
     end.sort_by do |(_,group)|
-      sortable_well_location_for(group['wells'].first)
+      sortable_well_location_for(group['wells'].first||group['all_wells'].first)
     end
 
     Hash[sorted_group_array].to_json.html_safe
