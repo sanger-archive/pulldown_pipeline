@@ -1,4 +1,4 @@
-<%= CSV.generate_line ["Sample", "Bed", "Name","Source EAN13", "Source Barcode", "Source Stock", "Source Well", "Destination EAN13", "Destination Barcode", "Destination Well", "Source Volume" ], :row_sep => "" %>
+<%= CSV.generate_line ["Sample", "Name","Source EAN13", "Source Barcode", "Source Stock", "Source Well", "Destination EAN13", "Destination Barcode", "Destination Well", "Source Volume" ], :row_sep => "" %>
 <% index = 0 %>
 <% offset = params['offset'].to_i %>
 <% @presenter.transfers[offset*4...(offset+1)*4].each_with_index do |transfers_list, bed_index| -%>
@@ -6,7 +6,6 @@
     <% source_well, destination_well = transfer -%>
     <%= CSV.generate_line [
       (index += 1),
-      bed_index+1,
       "#{@presenter.bed_prefix}#{(offset*4)+bed_index+1}",
       transfers_list[:source_ean],
       transfers_list[:source_barcode],
