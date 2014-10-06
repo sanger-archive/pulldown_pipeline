@@ -25,7 +25,12 @@ module Forms
     end
 
     def create_objects!
-      create_plate!
+      create_plate! do |plate|
+        api.bait_library_layout.create!(
+          :plate => plate.uuid,
+          :user  => user_uuid
+        )
+      end
     end
 
     def baits

@@ -1,5 +1,5 @@
 <%# TODO This form code breaks the semantic presenter model pattern.
-    The form should use attriutes on the presenter class not the lab_ware directly. 
+    The form should use attriutes on the presenter class not the lab_ware directly.
     Use the formtastic helpers not the rails helpers.
 %>
 
@@ -40,6 +40,8 @@
         options_for_select(['Equipment failure', 'Poor yield', 'Power failure', 'Reagent failure' ]),
         :disabled => true
       ) %>
+      <%= label_tag :customer_accepts_responsibility, 'Still charge customer:' %>
+      <%= check_box_tag :customer_accepts_responsibility, true, false %>
     </li>
 
     <li>

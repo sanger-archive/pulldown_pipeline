@@ -4,7 +4,28 @@ module Presenters
       base.class_eval do
         include Forms::Form
         write_inheritable_attribute :page, 'show'
+
+        class_inheritable_reader :csv
+        write_inheritable_attribute :csv, 'show'
+
+        class_inheritable_reader :has_qc_data?
+        write_inheritable_attribute :has_qc_data?, false
+
+        class_inheritable_reader :robot_name
+        class_inheritable_reader :bed_prefix
       end
+    end
+
+    def default_printer_uuid
+      @default_printer_uuid ||= Settings.printers[Settings.purposes[purpose.uuid].default_printer_type]
+    end
+
+    def default_label_count
+      @default_label_count ||= Settings.printers['default_count']
+    end
+
+    def printer_limit
+      @printer_limit ||= Settings.printers['limit']
     end
 
     def save!
@@ -39,10 +60,12 @@ module Presenters
 
     class_inheritable_reader    :tab_states
     write_inheritable_attribute :tab_states, {
-      :pending    =>  ['summary-button'],
-      :started    =>  ['summary-button'],
-      :passed     =>  ['summary-button'],
-      :cancelled  =>  ['summary-button']
+      :pending      =>  ['summary-button'],
+      :started      =>  ['summary-button'],
+      :passed       =>  ['summary-button'],
+      :cancelled    =>  ['summary-button'],
+      :qc_complete  =>  ['summary-button'],
+      :nx_in_progress => ['summary-button']
     }
 
     class_inheritable_reader    :authenticated_tab_states
@@ -64,6 +87,10 @@ module Presenters
 
     def purpose
       @purpose ||= lab_ware.plate_purpose
+    end
+
+    def qc_owner
+      lab_ware
     end
 
     def control_worksheet_printing(&block)
@@ -100,6 +127,14 @@ module Presenters
     def self.lookup_for(plate)
       plate_details = Settings.purposes[plate.plate_purpose.uuid] or raise UnknownPlateType, plate
       plate_details[:presenter_class].constantize
+    end
+
+    def csv_file_links
+      [["","#{Rails.application.routes.url_helpers.pulldown_plate_path(plate.uuid)}.csv"]]
+    end
+
+    def filename
+      false
     end
   end
 end

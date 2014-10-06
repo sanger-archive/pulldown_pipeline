@@ -2,6 +2,8 @@ module Presenters
   class QcCapablePlatePresenter < PlatePresenter
     include Presenters::Statemachine
 
+    write_inheritable_attribute :has_qc_data?, true
+
     write_inheritable_attribute :authenticated_tab_states, {
         :pending    =>  [ 'summary-button', 'plate-state-button' ],
         :started    =>  [ 'plate-QC-button', 'summary-button', 'plate-state-button' ],

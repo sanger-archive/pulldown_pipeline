@@ -2,6 +2,11 @@ module Forms
   class TaggingForm < CreationForm
     include Forms::Form::CustomPage
 
+    TagLayoutTemplates = [
+      "Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)",
+      "Illumina set - 6 mer tags in column major order (first oligo: ATCACG)"
+    ]
+
     write_inheritable_attribute :page, 'tagging'
     write_inheritable_attribute :attributes, [:api, :plate_purpose_uuid, :parent_uuid, :tag_layout_template_uuid, :user_uuid, :substitutions]
 
@@ -22,7 +27,7 @@ module Forms
       maximum_pool_size = plate.pools.map(&:last).map { |pool| pool['wells'].size }.max
 
       @tag_layout_templates = api.tag_layout_template.all.map(&:coerce).select do |template|
-        template.tag_group.tags.size >= maximum_pool_size
+        TagLayoutTemplates.include?(template.name) && template.tag_group.tags.size >= maximum_pool_size
       end
 
       @tag_groups = Hash[

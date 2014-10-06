@@ -21,9 +21,10 @@ class PlatesController < LabWareController
         :target       => @lab_ware.uuid,
         :contents     => wells_to_fail,
         :target_state => 'failed',
-        :reason       => 'Unspecified'
+        :reason       => 'Unspecified',
+        :customer_accepts_responsibility => params[:customer_accepts_responsibility]
       )
-      redirect_to(pulldown_plate_path(@lab_ware), :notice => 'Selected wells have been failed')
+      redirect_to(pulldown_plate_path(@lab_ware), :notice => "Selected wells have been failed.#{params[:customer_accepts_responsibility] ? ' The customer will still be charged.':''}")
     end
   end
 end
