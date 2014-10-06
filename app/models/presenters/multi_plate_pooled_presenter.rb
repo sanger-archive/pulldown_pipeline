@@ -78,7 +78,7 @@ class Presenters::MultiPlatePooledPresenter < Presenters::PooledPresenter
 
   def filename(offset=nil)
     return true if offset.nil?
-    "#{plate.barcode.prefix}#{plate.barcode.number}_#{offset.to_i+1}.csv"
+    "#{useful_barcode(plate.stock_plate.barcode)}_#{offset.to_i+1}.csv"
   end
 
 end
