@@ -30,6 +30,11 @@ module Presenters
 
     def save!
     end
+
+    def label_type
+      yield nil
+    end
+
   end
 
   class PlatePresenter
@@ -76,6 +81,31 @@ module Presenters
         :cancelled  =>  [ 'summary-button' ],
         :failed     =>  [ 'summary-button' ]
     }
+
+    class_inheritable_reader    :robot_controlled_states
+    write_inheritable_attribute :robot_controlled_states, {
+    }
+
+    def label_type
+      yield "custom-labels"
+    end
+
+    def robot_name
+      robot_controlled_states[labware.state.to_sym]
+    end
+
+    def robot_exists?
+      Settings.robots[location][robot_name].present?
+    end
+
+    def statechange_link(view)
+      robot_exists? ? "#{view.robot_path(robot_name)}/#{location}" : '#'
+    end
+
+    def statechange_label
+      robot_exists? ? "Bed verification" : 'Move plate to next state'
+    end
+
 
     def plate_to_walk
       self.plate
