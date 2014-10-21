@@ -82,6 +82,11 @@ module Presenters
         :failed     =>  [ 'summary-button' ]
     }
 
+
+    def label_type
+      yield "custom-labels"
+    end
+
     def plate_to_walk
       self.plate
     end
