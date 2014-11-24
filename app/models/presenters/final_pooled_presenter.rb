@@ -2,6 +2,8 @@ class Presenters::FinalPooledPresenter < Presenters::PooledPresenter
   write_inheritable_attribute :summary_partial, 'lab_ware/plates/pooled_into_tubes_plate'
   write_inheritable_attribute :printing_partial, 'lab_ware/plates/tube_printing'
 
+  write_inheritable_attribute :csv, 'show_pooled_alternative'
+
   write_inheritable_attribute :authenticated_tab_states, {
     :pending    =>  [ 'summary-button', 'plate-state-button' ],
     :started    =>  [ 'plate-QC-button', 'summary-button', 'plate-state-button' ],
