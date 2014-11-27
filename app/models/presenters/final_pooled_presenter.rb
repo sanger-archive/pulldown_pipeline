@@ -66,6 +66,16 @@ class Presenters::FinalPooledPresenter < Presenters::PooledPresenter
     plate.state
   end
 
+  def get_tube_barcodes
+    plate.tubes.map do |tube|
+      tube.barcode.class.module_eval { attr_accessor :study}
+      tube.barcode.class.module_eval { attr_accessor :suffix}
+      tube.barcode.study = tube.name
+      tube.barcode.suffix = 'MX Library tube'
+      tube.barcode
+    end
+  end
+
   def tube_state=(state)
     # Ignore this
   end
