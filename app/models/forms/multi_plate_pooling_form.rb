@@ -48,22 +48,29 @@ module Forms
 
     def well_transfers
       transfers = []
-      each_well do |source_uuid,source_well,destination_uuid,destination_well|
-        transfers << {
-          "source_uuid" => source_uuid,
-          "source_location" => source_well,
-          "destination_uuid" => destination_uuid,
-          "destination_location" => destination_well
-        }
+      each_well do |source_uuid,source_well,destination_uuid,destinations_well|
+        destinations_well.each do |destination_well|
+          transfers << {
+            "source_uuid" => source_uuid,
+            "source_location" => source_well,
+            "destination_uuid" => destination_uuid,
+            "destination_location" => destination_well
+          }
+        end
       end
       transfers
     end
     private :well_transfers
 
     def each_well
+      transfers.each do |uuid, layout|
+        layout.each do |location_destination, location_sources|
+          transfers[uuid][location_destination] = location_sources.split(",")
+        end
+      end
       transfers.each do |source_uuid, transfers|
-        transfers.each do |source_well, destination_well|
-          yield(source_uuid,source_well,@plate_creation.child.uuid,destination_well)
+        transfers.each do |source_well, destination_wells|
+          yield(source_uuid,source_well,@plate_creation.child.uuid,destination_wells)
         end
       end
     end
