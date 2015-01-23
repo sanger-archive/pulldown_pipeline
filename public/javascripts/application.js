@@ -9,6 +9,7 @@ $.ajaxSetup({
 (function(window, $, undefined){
   "use strict";
 
+
   // Set up the SCAPE namespace
   if (window.SCAPE === undefined) {
     window.SCAPE = {};
@@ -30,6 +31,19 @@ $.ajaxSetup({
       '<div class="substitute-tag palette-tag"><%= original_tag_id %></div>&nbsp;&nbsp;Tag <%= original_tag_id %> replaced with Tag <%= replacement_tag_id %>&nbsp;&nbsp;<div class="available-tag palette-tag"><%= replacement_tag_id %></div>'+
       '<input id="plate-substitutions-<%= original_tag_id %>" name="plate[substitutions][<%= original_tag_id %>]" type="hidden" value="<%= replacement_tag_id %>" />'+
       '</li>',
+    animateWell: function() {
+      if ($(this).children().length < 2) { return; }
+
+      this.pos = 0;
+
+      this.slide = function() {
+        var scrollTo;
+        this.pos = (this.pos + 1) % $(this).children().length;
+        scrollTo = $(this).children()[this.pos].offsetTop-5;
+        $(this).delay(1000).animate({scrollTop:scrollTo},500,this.slide)
+      };
+      this.slide();
+    },
 
     displayReason: function() {
       if ($('.reason:visible').length === 0) {
@@ -237,6 +251,7 @@ $.ajaxSetup({
     // State changes reasons...
     SCAPE.displayReason();
     $(document).on('change','#state', SCAPE.displayReason);
+    $('.well').each(SCAPE.animateWell);
   });
 
 
@@ -345,7 +360,6 @@ $.ajaxSetup({
 
       update_layout: function () {
         var tags = $(window.tag_layouts[$('#plate_tag_layout_template_uuid option:selected').text()]);
-
         tags.each(function(index) {
           $('#tagging-plate #aliquot_'+this[0]).
             hide('slow').text(this[1][1]).
@@ -434,7 +448,6 @@ $.ajaxSetup({
 
 
     var renderPoolingSummary = function(preCapPools){
-
       walkPreCapPools(preCapPools, function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
         var destinationWell = SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[poolNumber];
         var listElement = $('<li/>').
@@ -799,6 +812,7 @@ $.ajaxSetup({
     SCAPE.renderSourceWells = function(){
       var capPoolOffset = 0;
       var seqPoolOffset = 0;
+      var map = {};
       for (var plateIndex = 0; plateIndex < SCAPE.plates.length; plateIndex += 1) {
         if (SCAPE.plates[plateIndex]===undefined) {
           $('.plate-id-'+plateIndex).hide();
@@ -810,7 +824,6 @@ $.ajaxSetup({
           $('#well-transfers-'+plateIndex).detach();
 
           var newInputs = $(document.createElement('div')).attr('id', 'well-transfers-'+plateIndex);
-
           capPoolOffset += walkPreCapPools(preCapPools,function(preCapPool, poolNumber, seqPoolID, seqPoolIndex){
             var newInput, well;
 
@@ -818,14 +831,27 @@ $.ajaxSetup({
               well = $('.plate-id-'+plateIndex+' .'+preCapPool[wellIndex]).addClass('seqPool-'+(seqPoolOffset+seqPoolIndex+1));
               well.append( SCAPE.newAliquot(capPoolOffset+poolNumber, seqPoolID, SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[capPoolOffset+poolNumber]));
 
-              newInput = $(document.createElement('input')).
-                attr('name', 'plate[transfers]['+SCAPE.plates[plateIndex].uuid+']['+preCapPool[wellIndex]+']').
-                attr('type', 'hidden').
-                val(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[capPoolOffset+poolNumber]);
-
-              newInputs.append(newInput);
+              if (typeof map[SCAPE.plates[plateIndex].uuid] === "undefined")
+              {
+                map[SCAPE.plates[plateIndex].uuid] = {};
+              }
+              if (typeof map[SCAPE.plates[plateIndex].uuid][preCapPool[wellIndex]] === "undefined")
+              {
+                map[SCAPE.plates[plateIndex].uuid][preCapPool[wellIndex]] = [];
+              }
+              map[SCAPE.plates[plateIndex].uuid][preCapPool[wellIndex]].push(SCAPE.WELLS_IN_COLUMN_MAJOR_ORDER[capPoolOffset+poolNumber]);
             }
           });
+          for (var plateUuid in map) {
+            for (var well in map[plateUuid]) {
+              var newInput = $(document.createElement('input')).
+                attr('name', 'plate[transfers]['+plateUuid+']['+well+']').
+                attr('type', 'hidden').
+                val(map[plateUuid][well].join(","));
+              newInputs.append(newInput);
+            }
+          }
+
           for (var i in SCAPE.plates[0].preCapPools) { seqPoolOffset +=1 };
           $('.plate-id-'+plateIndex).append(newInputs);
         }
@@ -838,6 +864,8 @@ $.ajaxSetup({
       SCAPE.renderDestinationPools();
 
       $('.aliquot').fadeIn('slow');
+
+      $('.well').each(SCAPE.animateWell);
     };
 
     SCAPE.poolingSM = new SCAPE.StateMachine('.ui-content', {

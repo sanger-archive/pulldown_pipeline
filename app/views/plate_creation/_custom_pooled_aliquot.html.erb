@@ -1,3 +1,5 @@
+<% container.location.each do |location| -%>
 <div id="<%= "aliquot_#{id}" %>" class="aliquot <%= colours_by_location[container.location] %>" rel="<%= "#details_#{id}" %>">
-  <%= container.location %>
+  <%= location %>
 </div>
+<% end %>
