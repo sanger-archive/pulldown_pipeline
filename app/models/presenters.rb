@@ -30,6 +30,11 @@ module Presenters
 
     def save!
     end
+
+    def label_type
+      nil
+    end
+
   end
 
   class PlatePresenter
@@ -76,6 +81,11 @@ module Presenters
         :cancelled  =>  [ 'summary-button' ],
         :failed     =>  [ 'summary-button' ]
     }
+
+
+    def label_type
+      yield "custom-labels"
+    end
 
     def plate_to_walk
       self.plate
