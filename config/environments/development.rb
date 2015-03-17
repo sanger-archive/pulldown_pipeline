@@ -29,7 +29,7 @@ PulldownPipeline::Application.configure do
   config.api_connection_options.authorisation = 'development'
   config.api_connection_options.read_timeout = 500
 
-
+  config.shared_app_path = 'http://www.example.com'
 
   # Email settings...
   config.action_mailer.raise_delivery_errors = true
