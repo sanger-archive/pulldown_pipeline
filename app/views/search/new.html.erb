@@ -12,7 +12,11 @@
 
   <%= content do %>
     <%= flash_messages %>
-
+    <div class="instructions ui-body">
+      <h2>Now you only need one link...</h2>
+      <p>Both ends of the ISC pipeline have now been integrated into one application, and this page will no longer be maintained. Any future ISC work should be done through the shared application. This page will continue to run to support viewing old plates. If you end up using it as a fall-back, because the shared app doesn't work, then please let me know so that I can fix the shared app.
+      <a href="<%= shared_app %>"<h3>Go to the shared app...</h3></a>
+    </div>
     <h1>Search for plate by barcode</h1>
     <%= section do %>
       <%= form_tag perform_search_path, :class => 'plate-search-form', :method => 'post' do %>
