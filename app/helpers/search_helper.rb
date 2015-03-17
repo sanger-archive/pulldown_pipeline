@@ -6,5 +6,9 @@ module SearchHelper
       'No plates found.'
     end
   end
+
+  def shared_app
+    PulldownPipeline::Application.config.shared_app_path
+  end
 end
 
