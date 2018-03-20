@@ -1,3 +1,5 @@
+:warning: This project is no longer maintained. For alternatives consider https://github.com/sanger/limber
+
 Pulldown Pipeline Application
 =============================
 
